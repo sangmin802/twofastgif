@@ -16,7 +16,6 @@
 <script>
 export default {
   name : 'AddFile',
-  props : ['videoinfo'],
   data(){
     return {
 
@@ -60,7 +59,7 @@ export default {
             if(overLimitArr.length !== 0){ // 구분후, 용량초과하는거 있으면 스낵바로 출력시키고 등록안되게
               const nameWrap = [...overLimitArr].map(res => res.name)
               vnode.context.$emit('callalert', nameWrap, 'overSize');
-            }else{ // 용량 문제 없다면, App data값에 file 넣어줌
+            }else{ // 용량 문제 없다면, App / data값에 file 넣어줌
               underLmitArr.forEach(file => {
                 vnode.context.$emit('updatevideo', file);
                 // 푸는것은 서버에서

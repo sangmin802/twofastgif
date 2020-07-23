@@ -10,6 +10,12 @@
     <div v-if="type==='overLength'">
       {{value}}
     </div>
+    <ul v-if="type==='unVerifyUrls'">
+      <li v-for="(name, index) of value" :key="name">
+        {{index+1}}. {{name}}
+      </li>
+      <div>Url형식이 아니거나, 지원하지 않는 확장자입니다.</div>
+    </ul>
   </div>
 </template>
 

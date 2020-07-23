@@ -13,11 +13,21 @@
       </div>
       <component 
         :is="compNav"
-        :fileinfo="fileInfo"
 
         @callalert="onAlert"
-        @updatevideo="updateFileInfo"
+        @updatevideo="updateVideoInfo"
       ></component>
+      <div>등록된 파일</div>
+      <ul>
+        <li v-for="(data, index) of fileInfo" :key = "index">
+          <span v-if="typeof data === 'object'">
+            {{data.name}}
+          </span>
+          <span v-if="typeof data === 'string'">
+            {{data}}
+          </span>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -45,7 +55,7 @@ export default {
     onAlert(value, type){ // 스낵바 전용 메소드(자식들도 emit으로 연결)
       this.alertInform = {type, value};
     },
-    updateFileInfo(value){ // 파일등록(자식들도 emit으로 연결)
+    updateVideoInfo(value){ // 파일등록(자식들도 emit으로 연결)
       if(this.fileInfo.length >= 2){
         this.onAlert('두개 이상 불가능합니다.', 'overLength');
         return;
