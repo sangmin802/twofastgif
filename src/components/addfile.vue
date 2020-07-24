@@ -2,6 +2,7 @@
   <div id="addfileComp">
     <div class="title">파일 등록하기</div>
     <form>
+      <!-- 사용자 정의 디렉티브 생성후, 여러이벤트 동시처리 -->
       <label for="addFile" class="fileLabel"
         v-multidefault="{evt : ['dragenter', 'dragover', 'dragleave', 'drop']}"
         v-alldrop="{evt : ['dragleave', 'drop']}"
