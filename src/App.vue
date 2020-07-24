@@ -47,6 +47,7 @@
             <span v-if="typeof data === 'string'">
               {{data}}
             </span>
+            <span @click="remove(index)">제거</span>
           </li>
         </ul>
         <!-- 옵션 설정 팝업 노출 버튼 -->
@@ -103,6 +104,9 @@ export default {
         return;
       }
       this.fileInfo.push(value);
+    },
+    remove(_i){ // 등록한 파일 제거
+      this.fileInfo.splice(_i, 1);
     }
   }
 }
