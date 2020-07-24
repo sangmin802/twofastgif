@@ -36,7 +36,7 @@
               FPS설정
             </div>
             <div class="content">
-              <select v-model="options['file'+(index+1)].fps">
+              <select v-model="options[index].fps">
                 <option>10fps</option>
                 <option selected>15fps</option>
                 <option>25fps</option>
@@ -48,7 +48,7 @@
               해상도설정
             </div>
             <div class="content">
-              <select v-model="options['file'+(index+1)].scale">
+              <select v-model="options[index].scale">
                 <option>기본값</option>
                 <option>가로 600px</option>
                 <option>가로 480px</option>
@@ -64,16 +64,16 @@
             <div class="content">
               <div class="min">
                 <span>분</span>
-                <input @keydown.prevent v-model="options['file'+(index+1)].start.FM" type="number" min="0" max="5">
-                <input @keydown.prevent v-model="options['file'+(index+1)].start.SM" type="number" min="0" max="9">
+                <input @keydown.prevent v-model="options[index].start.FM" type="number" min="0" max="5">
+                <input @keydown.prevent v-model="options[index].start.SM" type="number" min="0" max="9">
               </div>
               <div class="sec">
                 <span>초</span>
-                <input @keydown.prevent v-model="options['file'+(index+1)].start.FS" type="number" min="0" max="5">
-                <input @keydown.prevent v-model="options['file'+(index+1)].start.SS" type="number" min="0" max="9">
+                <input @keydown.prevent v-model="options[index].start.FS" type="number" min="0" max="5">
+                <input @keydown.prevent v-model="options[index].start.SS" type="number" min="0" max="9">
                 :
-                <input @keydown.prevent v-model="options['file'+(index+1)].start.FMS" type="number" min="0" max="9">
-                <input @keydown.prevent v-model="options['file'+(index+1)].start.SMS" type="number" min="0" max="9">
+                <input @keydown.prevent v-model="options[index].start.FMS" type="number" min="0" max="9">
+                <input @keydown.prevent v-model="options[index].start.SMS" type="number" min="0" max="9">
               </div>
             </div>
           </div>
@@ -84,16 +84,16 @@
             <div class="content">
               <div class="min">
                 <span>분</span>
-                <input @keydown.prevent v-model="options['file'+(index+1)].end.FM" type="number" min="0" max="5">
-                <input @keydown.prevent v-model="options['file'+(index+1)].end.SM" type="number" min="0" max="9">
+                <input @keydown.prevent v-model="options[index].end.FM" type="number" min="0" max="5">
+                <input @keydown.prevent v-model="options[index].end.SM" type="number" min="0" max="9">
               </div>
               <div class="sec">
                 <span>초</span>
-                <input @keydown.prevent v-model="options['file'+(index+1)].end.FS" type="number" min="0" max="5">
-                <input @keydown.prevent v-model="options['file'+(index+1)].end.SS" type="number" min="0" max="9">
+                <input @keydown.prevent v-model="options[index].end.FS" type="number" min="0" max="5">
+                <input @keydown.prevent v-model="options[index].end.SS" type="number" min="0" max="9">
                 :
-                <input @keydown.prevent v-model="options['file'+(index+1)].end.FMS" type="number" min="0" max="9">
-                <input @keydown.prevent v-model="options['file'+(index+1)].end.SMS" type="number" min="0" max="9">
+                <input @keydown.prevent v-model="options[index].end.FMS" type="number" min="0" max="9">
+                <input @keydown.prevent v-model="options[index].end.SMS" type="number" min="0" max="9">
               </div>
             </div>
           </div>
@@ -110,10 +110,10 @@ export default {
   name: 'setOptionsComp',
   props : ['fileinfo'],
   data(){
-    const options = {};
+    const options = [];
     // 부모에게 받아오는 파일의 갯수애 따라 data값 생성
     [...this.fileinfo].forEach((file, index) => {
-      options[`file${index+1}`] = {
+      options[index] = {
         file,
         scale : '기본값',
         fps : '15fps',
@@ -149,7 +149,36 @@ export default {
   },
   methods : {
     sendAjax(){
-      console.log('보냄')
+      this.options.forEach(res => {
+        const {start, end} = res
+        let startTime = (start.FM+start.SM+start.FS+start.SS+start.FMS+start.SMS+'!').replace('!', '');
+        let endTime = (end.FM+end.SM+end.FS+end.SS+end.FMS+end.SMS+'!').replace('!', '');
+        
+        switch(this.timeCalc(startTime, endTime)){
+          case true : { // 끝나는시간이 시작시간보다 클 때(가능)
+            console.log('가능')
+          }break;
+          case false : { // 끝나는시간이 시작시간보다 작을 때(불가능)
+            console.log('불가능')
+          }break;
+          case 'same' : { // 00:00:00으로, 아무것도 설정안했을 때(기본값)
+            console.log('동일')
+          }break;
+        }
+      });
+    },
+    // 시작시간, 종료시간 유효성검사
+    timeCalc(start, end){
+      const gap = Number(end) - Number(start);
+      let result = null;
+      if(gap < 0){
+        result = false
+      }else if(gap > 0){
+        result = true
+      }else if(gap === 0){
+        result = 'same'
+      }
+      return result;
     }
   }
 }
