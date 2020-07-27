@@ -8,9 +8,7 @@
       <div class="alertBg" @click="alertInform = null"></div>
       <!-- 스낵바 컴포넌트 -->
       <!-- alertobj = 스낵바 내용과, 타입을 담고있는 속성 -->
-      <alert-component 
-        class="alertComp"
-        
+      <alert-component         
         :alertobj="alertInform" 
       >
       </alert-component>
@@ -19,8 +17,8 @@
       <div class="title">Two Fast Gif-</div>
       <div class="tabBtnWrap">
         <!-- compNav 말그대로 컴포넌트 변경 네비게이션 -->
-        <span class="tabBtn" @click="compNav='AddFileComponent'">파일</span>
-        <span class="tabBtn" @click="compNav='AddUrlComponent'">url</span>
+        <span class="tabBtn" @click="navChange('AddFileComponent')">파일</span>
+        <span class="tabBtn" @click="navChange('AddUrlComponent')">url</span>
       </div>
       <!-- 위의 네비게이션 버튼을 통해 출력하는 컴포넌트 -->
       <!-- :is="compNav" data의 compNav를 통해 감지 -->
@@ -64,7 +62,9 @@
           class="optionPopup"
           v-if="optionPopup"
 
+          :filetype="compNav"
           :fileinfo="fileInfo"
+          @callalert="onAlert"
         >
         </OptionsComponent>
       </div>
@@ -107,6 +107,10 @@ export default {
     },
     remove(_i){ // 등록한 파일 제거
       this.fileInfo.splice(_i, 1);
+    },
+    navChange(_compName){ // 출력 comp 변경, 파일등록방식 변경 시, 파일 담는 배열 초기화.(동시에 같은 유형의 파일만 담도록)
+      this.compNav = _compName;
+      this.fileInfo = [];
     }
   }
 }
@@ -126,19 +130,13 @@ export default {
     height: 100%;
     position: absolute;
     background : rgba(0,0,0,0.8);
+    z-index : 9;
   }
   .optionsBg {
     width: 100%;
     height: 100%;
     position: absolute;
     background : rgba(0,0,0,0.8);
-  }
-  .alertComp {
-    position: absolute;
-    transform: translate(-50%);
-    left: 50%;
-    top: 20%;
-    background : white
   }
   .contWrap {
     width : 60%;
