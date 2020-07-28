@@ -1,27 +1,33 @@
 <template>
   <div id="alertComp">
     <div class="title">알림</div>
-    <ul v-if="type==='overSize'">
-      <li v-for="(name, index) of value" :key="name" class="limitLength">
-        {{index+1}}. {{name}}
-      </li>
+    <div v-if="type==='overSize'">
+      <ul >
+        <li v-for="(name, index) of value" :key="name" class="limitLength">
+          {{index+1}}. {{name}}
+        </li>
+      </ul>
       <div>위 파일의 용량이 최대 허용량 초과입니다.</div>
-    </ul>
-    <div v-if="type==='overLength'">
+    </div>
+    <div v-if="type==='overLength'" class="overLength">
       {{value}}
     </div>
-    <ul v-if="type==='unVerifyUrls'">
-      <li v-for="(name, index) of value" :key="name" class="limitLength">
-        {{index+1}}. {{name}}
-      </li>
+    <div v-if="type==='unVerifyUrls'">
+      <ul>
+        <li v-for="(name, index) of value" :key="name" class="limitLength">
+          {{index+1}}. {{name}}
+        </li>
+      </ul>
       <div>Url형식이 아니거나, 지원하지 않는 확장자입니다.</div>
-    </ul>
-    <ul v-if="type==='fileOptionsError'">
-      <li v-for="(name, index) of value" :key="name" class="limitLength">
-        {{index+1}}. {{name}}
-      </li>
+    </div>
+    <div v-if="type==='fileOptionsError'">
+      <ul>
+        <li v-for="(name, index) of value" :key="name" class="limitLength">
+          {{index+1}}. {{name}}
+        </li>
+      </ul>
       <div>시작시간이 종료시간보다 크거나 같습니다.</div>
-    </ul>
+    </div>
   </div>
 </template>
 
@@ -49,6 +55,26 @@ export default {
     top: 20%;
     background : white;
     z-index : 10;
+    padding : 1.5em;
+    border-radius : 0.3em;
+  }
+  #alertComp * {
+    color : black;
+  }
+  #alertComp .title {
+    font-size : 1em;
+    font-weight : 500;
+  }
+  #alertComp ul {
+    margin : 1em 0 0 0.3em;
+  }
+  #alertComp ul li {
+    margin-bottom : 0.5em;
+    font-size : 0.8em;
+  }
+  #alertComp .overLength {
+    margin : 1em 0 0 0.3em;
+    font-size : 0.8em;
   }
   .limitLength {
     width : 100%;

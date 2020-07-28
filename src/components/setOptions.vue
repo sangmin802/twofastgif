@@ -17,11 +17,11 @@
         v-if="optionTarget === index+1"
       >
         <div class="targetTitle">
-          <div class="title">파일명</div>
-          <div class="content" v-if="typeof file === 'object'">
+          <div class="optTitle">파일명</div>
+          <div class="optContent" v-if="typeof file === 'object'">
             {{file.name}}
           </div>
-          <div class="content" v-if="typeof file === 'string'">
+          <div class="optContent" v-if="typeof file === 'string'">
             {{file}}
           </div>
         </div>
@@ -32,10 +32,10 @@
           @submit.prevent="sendAjax"  
         >
           <div :class="'setFps'+(index+1)">
-            <div class="title">
+            <div class="optTitle">
               FPS설정
             </div>
-            <div class="content">
+            <div class="optContent">
               <select v-model="options[index].fps">
                 <option>10fps</option>
                 <option selected>15fps</option>
@@ -44,10 +44,10 @@
             </div>
           </div>
           <div :class="'setScale'+(index+1)">
-            <div class="title">
+            <div class="optTitle">
               해상도설정
             </div>
-            <div class="content">
+            <div class="optContent">
               <select v-model="options[index].scale">
                 <option>변환할 동영상 해상도(기본)</option>
                 <option>가로:600px</option>
@@ -58,10 +58,10 @@
             </div>
           </div>
           <div :class="'setStart'+(index+1)">
-            <div class="title">
+            <div class="optTitle">
               움짤 시작시간 설정
             </div>
-            <div class="content">
+            <div class="optContent">
               <div class="min">
                 <span>분</span>
                 <input @keydown.prevent v-model="options[index].start.FM" type="number" min="0" max="5">
@@ -78,10 +78,10 @@
             </div>
           </div>
           <div :class="'setEnd'+(index+1)">
-            <div class="title">
+            <div class="optTitle">
               움짤 종료시간 설정
             </div>
-            <div class="content">
+            <div class="optContent">
               <div class="min">
                 <span>분</span>
                 <input @keydown.prevent v-model="options[index].end.FM" type="number" min="0" max="5">
@@ -186,15 +186,18 @@ export default {
         console.log('정상진행')
         const options = [...this.options];
         let ajaxForm = {}; // Ajax통신할 객체
+        let url = null;
         switch(this.filetype){
           case 'AddFileComponent' : {
-            // console.log('영상파일 등록')
+            // url = 'https://twofastgif.com/convert/upload/';
+            url = 'http://192.168.1.5:8000/convert/upload/';
           }break;
           case 'AddUrlComponent' : {
-            // console.log('url등록')
+            // url = 'https://twofastgif.com/convert/urlupload/';
+            url = 'http://192.168.1.5:8000/convert/urlupload/';
           }
         }
-
+        
         options.forEach((option, index) => { // 등록된 파일 갯수에 따른 객체 값 설정
           let stringIndex = null;
           const filteredIndex = index+1;
@@ -207,24 +210,28 @@ export default {
               stringIndex = 'second';
             }break;
           }
-          // console.log(option)
+        
           ajaxForm[`${stringIndex}_uploaded_file`] = file;
-          ajaxForm[`fps_value_${filteredIndex}`] = Number(fps.replace('fpx', ''));
+          ajaxForm[`fps_value_${filteredIndex}`] = Number(fps.replace('fps', ''));
           ajaxForm[`scaleValue_select_${filteredIndex}`] = scale;
-          console.log(this.createMin(start), this.createSec(start))
-          ajaxForm[`start_${filteredIndex}`] = start;
-          ajaxForm[`end_${filteredIndex}`] = end;
-          // first_uploaded_file : null,
-          // second_uploaded_file : null,
-          // scaleValue_select_1 : "변환할 동영상 해상도(기본)",
-          // scaleValue_select_2 : "변환할 동영상 해상도(기본)",
-          // fps_value_1 : 15,
-          // fps_value_2 : 15,
-          // start_1 : 0,
-          // start_2 : 0,
-          // end_1 : -1.0,
-          // end_2 : -1.0,
+          ajaxForm[`start_${filteredIndex}`] = this.returnSec(start, 'start');
+          ajaxForm[`end_${filteredIndex}`] = this.returnSec(end, 'end');
+        });
+
+        fetch(url, {
+          method : 'POST',
+          headers : {
+            'Content-Type' : 'application/json'
+          },
+          body : JSON.stringify(ajaxForm)
         })
+        .then(res => res.json())
+        .then(data => {
+          console.log(data)
+        })
+        .catch(err => {
+          console.log(err)
+        });
       }
     },
     // 시작시간, 종료시간 유효성검사
@@ -243,24 +250,42 @@ export default {
     changeToFullcount(obj){ // 시작시간, 종료시간 유효성검사를 위한 합치기
       return Number((obj.FM+obj.SM+obj.FS+obj.SS+obj.FMS+obj.SMS+'!').replace('!', ''));
     },
-    createMin(obj){ // 분만 추출
-      return Number((obj.FM+obj.SM+'!').replace('!', ''));
-    },
-    createSec(obj){ // 초만 추출
-      return Number((obj.FS+obj.SS+'.'+obj.FMS+obj.SMS+'!').replace('!', ''));
+    returnSec(obj, type){ // 분+초 추출
+      const minToSec = Number(obj.FM+obj.SM)*60; // 분 => 초
+      // (분=>초)+기본초+.+밀리초
+      let result = Number(minToSec+Number(obj.FS+obj.SS)+'.'+obj.FMS+obj.SMS);
+
+      // 기본값일 경우
+      if(result === '0.00'){
+        if(type==='start'){ // 시작이면 0 반환
+          result = 0;
+        }else if(type==='end'){ // 종료면 -1.0반환
+          result = -1.0;
+        }
+      }
+      return result;
     }
   }
 }
 </script>
 https://twofastgif.com/convert/upload/
 https://twofastgif.com/convert/urlupload/
-
+first_uploaded_file : null,
+second_uploaded_file : null,
+scaleValue_select_1 : "변환할 동영상 해상도(기본)",
+scaleValue_select_2 : "변환할 동영상 해상도(기본)",
+fps_value_1 : 15,
+fps_value_2 : 15,
+start_1 : 0,
+start_2 : 0,
+end_1 : -1.0,
+end_2 : -1.0,
 <style>
   #setOptionsComp {
     position : absolute;
     left : 50%;
-    top : 50%;
-    transform : translate(-50%, -50%);
+    top : 20%;
+    transform : translate(-50%, -20%);
     background : white;
     width : 60%;
     height : 50%;

@@ -3,22 +3,23 @@
   <div id="app">
     <!-- 옵션 켰을 때, 검은 뒷배경 -->
     <div class="optionsBg" v-if="optionPopup" @click="optionPopup = false"></div>
-    <div class="alertWrap" v-if="alertInform">
       <!-- 스낵바 떴을 때, 검은 뒷배경 -->
-      <div class="alertBg" @click="alertInform = null"></div>
-      <!-- 스낵바 컴포넌트 -->
-      <!-- alertobj = 스낵바 내용과, 타입을 담고있는 속성 -->
-      <alert-component         
+    <div class="alertBg" v-if="alertInform" @click="alertInform = null"></div>
+    <!-- 스낵바 컴포넌트 -->
+    <!-- alertobj = 스낵바 내용과, 타입을 담고있는 속성 -->
+    <transition name="alert">
+      <alert-component
         :alertobj="alertInform" 
+         v-if="alertInform"
       >
       </alert-component>
-    </div>
+    </transition>
     <div class="contWrap">
       <div class="title">Two Fast Gif-</div>
       <div class="tabBtnWrap">
         <!-- compNav 말그대로 컴포넌트 변경 네비게이션 -->
-        <span class="tabBtn" @click="navChange('AddFileComponent')">파일</span>
-        <span class="tabBtn" @click="navChange('AddUrlComponent')">url</span>
+        <span class="tabBtn" :class="{target : compNav==='AddFileComponent'}" @click="navChange('AddFileComponent')">파일</span>
+        <span class="tabBtn" :class="{target : compNav==='AddUrlComponent'}" @click="navChange('AddUrlComponent')">url</span>
       </div>
       <!-- 위의 네비게이션 버튼을 통해 출력하는 컴포넌트 -->
       <!-- :is="compNav" data의 compNav를 통해 감지 -->
@@ -68,6 +69,9 @@
         >
         </OptionsComponent>
       </div>
+      <button class="howToUseBtn" @click="showHowToUse=!showHowToUse">설명서</button>
+      <HowToUseComponent v-show="showHowToUse">
+      </HowToUseComponent>
     </div>
   </div>
 </template>
@@ -77,6 +81,7 @@ import AddFileComponent from './components/addfile.vue';
 import AddUrlComponent from './components/addurl.vue';
 import AlertComponent from './components/alert.vue';
 import OptionsComponent from './components/setOptions.vue';
+import HowToUseComponent from './components/howtouse.vue';
 
 export default {
   name: 'App',
@@ -84,14 +89,16 @@ export default {
     AddFileComponent, // 파일등록
     AddUrlComponent, // url등록
     AlertComponent, // 스낵바
-    OptionsComponent // 옵션설정
+    OptionsComponent, // 옵션설정
+    HowToUseComponent // 사용설명
   },
   data(){
     return {
       fileInfo : [], // 등록된 file
       compNav : 'AddFileComponent', // 네비게이션바 클릭시 노출Comp 다르게
       alertInform : null, // 스낵바 정보보내는 객체
-      optionPopup : false
+      optionPopup : false, // 옵션팝업
+      showHowToUse : false
     }
   },
   methods : {
@@ -118,8 +125,14 @@ export default {
 
 <style>
   * {
-    margin : 0; padding : 0; list-style : none; color : black; text-decoration : none; box-sizing : border-box; outline : none;
+    margin : 0; padding : 0; list-style : none; text-decoration : none; box-sizing : border-box; outline : none;
   }
+  #app {
+    background : #333;
+    height : 100vh;
+    padding-top : 2em;
+  }
+  /* 스낵바 관련 */
   .alertWrap {
     position : absolute;
     width : 100%;
@@ -129,19 +142,43 @@ export default {
     width: 100%;
     height: 100%;
     position: absolute;
-    background : rgba(0,0,0,0.8);
+    background : rgba(0,0,0,0.4);
     z-index : 9;
+    top : 0;
   }
+  /* 스낵바 컴포넌트 애니메이션 */
+  .alert-enter-active {
+    animation : alert .5s;
+  }
+  @keyframes alert {
+    0% {top : 18%; opacity : 0;}
+    100% {top : 20%; opacity : 1;}
+  }    
+  /* 옵션관련 */
   .optionsBg {
     width: 100%;
     height: 100%;
     position: absolute;
-    background : rgba(0,0,0,0.8);
+    background : rgba(0,0,0,0.4);
+    top : 0;
   }
+  /* 그 외 컨텐츠 */
   .contWrap {
-    width : 60%;
+    width : 70%;
     margin : 0 auto;
-    padding-top : 4em;
+    padding : 2em;
+    background : white;
+    border-radius : 0.3em;
+  }
+  .contWrap .title {
+    font-size : 2em;
+    font-weight : bold;
+    color : #333;
+  }
+  .contWrap .tabBtnWrap {
+    margin : 0.5em 0;
+    font-size : 1.1em;
+    color : #666;
   }
   .contWrap .tabBtn {
     margin-left : 1em;
@@ -149,5 +186,12 @@ export default {
   }
   .contWrap .tabBtn:nth-child(1) {
     margin-left : 0;
+  }
+  .contWrap .howToUseBtn {
+    margin-top : 1.5em;
+  }
+  .target {
+    color : #555;
+    font-weight : bold;
   }
 </style>

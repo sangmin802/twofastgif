@@ -1,6 +1,6 @@
 <template>
   <div id="addurlComp">
-    <div class="title">URL 등록하기</div>
+    <div class="urlTitle">URL 등록하기</div>
     <p>
       <button @click="moreUrl = !moreUrl">
         <span v-if="!moreUrl">추가하기</span>
