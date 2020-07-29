@@ -15,7 +15,7 @@
       </alert-component>
     </transition>
     <div class="contWrap">
-      <div class="title">Two Fast Gif-</div>
+      <div class="title">움짤생성기</div>
       <div class="tabBtnWrap">
         <!-- compNav 말그대로 컴포넌트 변경 네비게이션 -->
         <span class="tabBtn" :class="{target : compNav==='AddFileComponent'}" @click="navChange('AddFileComponent')">파일</span>
@@ -37,16 +37,16 @@
         
         v-if="fileInfo.length!==0"
       >
-        <div>등록된 파일</div>
+        <div class="addedFileList">등록된 파일</div>
         <ul>
-          <li v-for="(data, index) of fileInfo" :key = "index">
-            <span v-if="typeof data === 'object'">
+          <li class="addedfile" v-for="(data, index) of fileInfo" :key = "index">
+            <span class="limitLength" v-if="typeof data === 'object'">
               {{data.name}}
             </span>
-            <span v-if="typeof data === 'string'">
+            <span class="limitLength" v-if="typeof data === 'string'">
               {{data}}
             </span>
-            <span @click="remove(index)">제거</span>
+            <span class="cancelFile" @click="remove(index)">취소</span>
           </li>
         </ul>
         <!-- 옵션 설정 팝업 노출 버튼 -->
@@ -55,19 +55,23 @@
 
           @click="optionPopup = true"
         >
-          옵션 설정하기
+          <span>
+            옵션 설정하기
+          </span>
         </div>
         <!-- 옵션 설정 팝업 클릭 시, 노출되는 컴포넌트 -->
         <!-- fileinfo = 등록된 최대 두개의 파일 전달 -->
-        <OptionsComponent
-          class="optionPopup"
-          v-if="optionPopup"
+        <transition name="alert">
+          <OptionsComponent
+            class="optionPopup"
+            v-if="optionPopup"
 
-          :filetype="compNav"
-          :fileinfo="fileInfo"
-          @callalert="onAlert"
-        >
-        </OptionsComponent>
+            :filetype="compNav"
+            :fileinfo="fileInfo"
+            @callalert="onAlert"
+          >
+          </OptionsComponent>
+        </transition>
       </div>
       <button class="howToUseBtn" @click="showHowToUse=!showHowToUse">설명서</button>
       <HowToUseComponent v-show="showHowToUse">
@@ -127,10 +131,13 @@ export default {
   * {
     margin : 0; padding : 0; list-style : none; text-decoration : none; box-sizing : border-box; outline : none;
   }
+  /* body { 
+    overflow-y : scroll;
+  } */
   #app {
-    background : #333;
-    height : 100vh;
-    padding-top : 2em;
+    background : #4876ef;
+    min-height : 100vh;
+    padding : 2em 0 2em;
   }
   /* 스낵바 관련 */
   .alertWrap {
@@ -188,10 +195,72 @@ export default {
     margin-left : 0;
   }
   .contWrap .howToUseBtn {
-    margin-top : 1.5em;
-  }
-  .target {
-    color : #555;
+    border : none;
+    margin-top : 1em;
+    padding : 0.1em;
+    background : none;
+    font-size : 1em;
     font-weight : bold;
+    color : #999;
+    cursor : pointer;
+    transition : .2s;
+  }
+  .contWrap .howToUseBtn:hover {
+    color : #111;
+  }
+  /* 등록된 파일 */
+  .afterAddedWrap {
+    margin-top : 1em;
+  }
+  .afterAddedWrap .addedFileList {
+    padding-bottom : 0.5em;
+    color : #333;
+    font-weight : bold;
+  }
+  .afterAddedWrap .addedfile {
+    margin : 0.3em 0.5em 0 0.5em;
+    padding : 0.5em;
+    background : #4876ef;
+    border-radius : 0.3em;
+    color : white;
+    display : flex;
+    justify-content : space-between;
+    transition : .2s;
+  }
+  .afterAddedWrap .addedfile:hover {
+    background : #2353D2;
+  }
+  .afterAddedWrap .addedfile .cancelFile {
+    cursor : pointer;
+  }
+  /* 옵션설정하기 */
+  .setOptionsBtn {
+    margin-top : 1em;
+  }
+  .setOptionsBtn span {
+    padding : 0.2em;
+    background : none;
+    font-size : 1em;
+    font-weight : bold;
+    color : #999;
+    cursor : pointer;
+    transition : .2s;
+  }
+  .setOptionsBtn span:hover {
+    color : #111;
+  }
+
+
+
+
+  .target {
+    color : #333 !important;
+    font-weight : bold !important;
+  }
+  .limitLength {
+    width : 90%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 </style>

@@ -1,17 +1,17 @@
 <template>
   <div id="addurlComp">
-    <div class="urlTitle">URL 등록하기</div>
-    <p>
+    <!-- <div class="urlTitle">URL 등록하기</div> -->
+    <!-- <p>
       <button @click="moreUrl = !moreUrl">
         <span v-if="!moreUrl">추가하기</span>
         <span v-if="moreUrl">제거하기</span>
       </button>
-    </p>
+    </p> -->
     <form @submit.prevent="onSubmit" >
       <p>
         <input type="text" v-model="url1" placeholder="URL 1">
       </p>
-      <p v-if="moreUrl">
+      <p v-if="url1">
         <input type="text" v-model="url2" placeholder="URL 2">
       </p>
       <p>
@@ -26,7 +26,7 @@ export default {
   name: 'AddUrl',
   data(){
     return {
-      moreUrl : false, // url입력창 추가하기
+      // moreUrl : false, // url입력창 추가하기
       url1 : null, // url1
       url2 : null, // url2
       fileEndTypes: [ // 지원하는 확장자
@@ -87,5 +87,25 @@ export default {
 </script>
 
 <style>
-
+  #addurlComp p {
+    margin-bottom : 0.5em;
+  }
+  #addurlComp p input[type="text"] {
+    border : 0;
+    border-bottom : 1px solid #eaeaea;
+    padding : 0.3em;
+  }
+  #addurlComp p input[type="submit"] {
+    border : 0;
+    padding : 0.3em;
+    margin-top : 0.5em;
+    border-radius : 0.3em;
+    color : white;
+    background : #4876ef;
+    cursor : pointer;
+    transition : .2s;
+  }
+  #addurlComp p input[type="submit"]:hover {
+    background : #2353D2;
+  }
 </style>

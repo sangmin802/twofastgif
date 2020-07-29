@@ -23,11 +23,12 @@ export default {
 <style>
   #howToUseComp ol {
     margin-left : 1.5em;
+    margin-top : 1em;
   }
   #howToUseComp ol li {
     list-style : circle;
     font-size : 0.9em;
-    color : #666;
+    color : #111;
     margin-top : 0.3em;
   }
 </style>

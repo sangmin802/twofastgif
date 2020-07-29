@@ -6,6 +6,7 @@
         v-for="(file, index) of fileinfo"
         :key="'optionTab'+(index+1)"
         @click="optionTarget = index+1"
+        :class="{target : optionTarget === index+1}"
       >Video{{index+1}}</span>
     </div>
     <div class="optionWrap"
@@ -31,7 +32,7 @@
           :class="'optionForm'+(index+1)"
           @submit.prevent="sendAjax"  
         >
-          <div :class="'setFps'+(index+1)">
+          <div class="optDetailWrap" :class="'setFps'+(index+1)">
             <div class="optTitle">
               FPS설정
             </div>
@@ -43,7 +44,7 @@
               </select>
             </div>
           </div>
-          <div :class="'setScale'+(index+1)">
+          <div class="optDetailWrap" :class="'setScale'+(index+1)">
             <div class="optTitle">
               해상도설정
             </div>
@@ -57,43 +58,58 @@
               </select>
             </div>
           </div>
-          <div :class="'setStart'+(index+1)">
+          <div class="optDetailWrap" :class="'setPalette'+(index+1)">
+            <div class="optTitle">
+              화질설정
+            </div>
+            <div class="optContent qualityWrap">
+              <div class="highQualityWrap">
+                <label for="highQuality">고화질</label>
+                <input type="radio" checked value="1" v-model="options[index].palette" id="highQuality">
+              </div>
+              <div class="lowQualityWrap">
+                <label for="lowQuality">저화질</label>
+                <input type="radio" value="0" v-model="options[index].palette" id="lowQuality">
+              </div>
+            </div>
+          </div>
+          <div class="optDetailWrap" :class="'setStart'+(index+1)">
             <div class="optTitle">
               움짤 시작시간 설정
             </div>
-            <div class="optContent">
+            <div class="optContent timeOption">
               <div class="min">
-                <span>분</span>
                 <input @keydown.prevent v-model="options[index].start.FM" type="number" min="0" max="5">
                 <input @keydown.prevent v-model="options[index].start.SM" type="number" min="0" max="9">
+                <span>분</span>
               </div>
               <div class="sec">
-                <span>초</span>
                 <input @keydown.prevent v-model="options[index].start.FS" type="number" min="0" max="5">
                 <input @keydown.prevent v-model="options[index].start.SS" type="number" min="0" max="9">
                 :
                 <input @keydown.prevent v-model="options[index].start.FMS" type="number" min="0" max="9">
                 <input @keydown.prevent v-model="options[index].start.SMS" type="number" min="0" max="9">
+                <span>초</span>
               </div>
             </div>
           </div>
-          <div :class="'setEnd'+(index+1)">
+          <div class="optDetailWrap" :class="'setEnd'+(index+1)">
             <div class="optTitle">
               움짤 종료시간 설정
             </div>
-            <div class="optContent">
+            <div class="optContent timeOption">
               <div class="min">
-                <span>분</span>
                 <input @keydown.prevent v-model="options[index].end.FM" type="number" min="0" max="5">
                 <input @keydown.prevent v-model="options[index].end.SM" type="number" min="0" max="9">
+                <span>분</span>
               </div>
               <div class="sec">
-                <span>초</span>
                 <input @keydown.prevent v-model="options[index].end.FS" type="number" min="0" max="5">
                 <input @keydown.prevent v-model="options[index].end.SS" type="number" min="0" max="9">
                 :
                 <input @keydown.prevent v-model="options[index].end.FMS" type="number" min="0" max="9">
                 <input @keydown.prevent v-model="options[index].end.SMS" type="number" min="0" max="9">
+                <span>초</span>
               </div>
             </div>
           </div>
@@ -105,7 +121,9 @@
 </template>
 
 <script>
-
+import axios from 'axios';
+axios.defaults.xsrfCookieName = 'csrftoken';
+axios.defaults.xsrfHeaderName = 'x-CSRFToken';
 export default {
   name: 'setOptionsComp',
   props : ['fileinfo', 'filetype'],
@@ -117,6 +135,7 @@ export default {
         file,
         scale : '변환할 동영상 해상도(기본)',
         fps : '15fps',
+        palette : 1,
         start : {
           // 첫 분
           FM : 0,
@@ -185,23 +204,25 @@ export default {
       }else{
         console.log('정상진행')
         const options = [...this.options];
-        let ajaxForm = {}; // Ajax통신할 객체
+        let formData = new FormData(); // Ajax통신할 객체
         let url = null;
         switch(this.filetype){
           case 'AddFileComponent' : {
             // url = 'https://twofastgif.com/convert/upload/';
-            url = 'http://192.168.1.5:8000/convert/upload/';
+            // url = 'http://192.168.1.5:8000/convert/upload/';
+            url = 'http://ec2-13-209-17-21.ap-northeast-2.compute.amazonaws.com/convert/upload/';
           }break;
           case 'AddUrlComponent' : {
             // url = 'https://twofastgif.com/convert/urlupload/';
-            url = 'http://192.168.1.5:8000/convert/urlupload/';
+            // url = 'http://192.168.1.5:8000/convert/urlupload/';
+            url = 'http://ec2-13-209-17-21.ap-northeast-2.compute.amazonaws.com/convert/urlupload/';
           }
         }
         
         options.forEach((option, index) => { // 등록된 파일 갯수에 따른 객체 값 설정
           let stringIndex = null;
           const filteredIndex = index+1;
-          const {file, fps, scale, start, end} = option;
+          const {file, fps, scale, start, end, palette} = option;
           switch(index){
             case 0 : {
               stringIndex = 'first';
@@ -210,28 +231,35 @@ export default {
               stringIndex = 'second';
             }break;
           }
-        
-          ajaxForm[`${stringIndex}_uploaded_file`] = file;
-          ajaxForm[`fps_value_${filteredIndex}`] = Number(fps.replace('fps', ''));
-          ajaxForm[`scaleValue_select_${filteredIndex}`] = scale;
-          ajaxForm[`start_${filteredIndex}`] = this.returnSec(start, 'start');
-          ajaxForm[`end_${filteredIndex}`] = this.returnSec(end, 'end');
+          formData.append(`${stringIndex}_uploaded_file`,file);
+          formData.append(`fps_value_${filteredIndex}`,Number(fps.replace('fps', '')));
+          formData.append(`scaleValue_select_${filteredIndex}`,scale);
+          formData.append(`use_palette_${filteredIndex}`,palette);
+          formData.append(`start_${filteredIndex}`,this.returnSec(start, 'start'));
+          formData.append(`end_${filteredIndex}`,this.returnSec(end, 'end'));
         });
 
-        fetch(url, {
-          method : 'POST',
-          headers : {
-            'Content-Type' : 'application/json'
-          },
-          body : JSON.stringify(ajaxForm)
+        axios.post(url, formData)
+        .then(res => {
+          console.log(res)
         })
-        .then(res => res.json())
-        .then(data => {
-          console.log(data)
-        })
-        .catch(err => {
-          console.log(err)
-        });
+        // fetch(url, {
+        //   method : 'POST',
+        //   headers: {
+        //     // 'Accept' : 'application/json, */*',
+        //     'Content-Type': 'application/json'
+        //   },
+        //   // body : JSON.stringify(formData)
+        //   // body : formData
+        //   body : JSON.stringify({text : 'test'})
+        // })
+        // .then(res => res.json())
+        // .then(data => {
+        //   console.log(data)
+        // })
+        // .catch(err => {
+        //   console.log(err)
+        // });
       }
     },
     // 시작시간, 종료시간 유효성검사
@@ -254,9 +282,8 @@ export default {
       const minToSec = Number(obj.FM+obj.SM)*60; // 분 => 초
       // (분=>초)+기본초+.+밀리초
       let result = Number(minToSec+Number(obj.FS+obj.SS)+'.'+obj.FMS+obj.SMS);
-
       // 기본값일 경우
-      if(result === '0.00'){
+      if(result === 0){
         if(type==='start'){ // 시작이면 0 반환
           result = 0;
         }else if(type==='end'){ // 종료면 -1.0반환
@@ -288,12 +315,97 @@ end_2 : -1.0,
     transform : translate(-50%, -20%);
     background : white;
     width : 60%;
-    height : 50%;
+    padding : 1em;
+    border-radius : 0.3em;
   }
   .targetTitle .content {
     width : 100%;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+  }
+  .optionsTabBtn span {
+    margin-right : 1em;
+    color : #888;
+    font-size : 1.3em;
+    font-weight : bold;
+    cursor : pointer;
+  }
+  /* 옵션창 */
+  .optionWrap {
+    margin : 0.5em 0.2em;
+  }
+  .optionWrap .optTitle {
+    color : #666;
+    font-weight : bold;
+    font-size : 1em;
+    margin-bottom : 0.3em;
+  }
+  .optionWrap .optContent, .optionWrap .optContent * {
+    color : #666;
+    font-size : 0.9em;
+  }
+  .optionWrap .optDetailWrap {
+    margin-bottom : 0.5em;
+    padding-bottom : 0.5em;
+    border-bottom : 1px solid #eaeaea;
+  }
+  .optionWrap .targetTitle {
+    margin : 0.7em 0;
+  }
+  /* input 설정 */
+  .optionWrap select {
+    border : 0;
+    padding-bottom : 0.3em;
+  }
+  .qualityWrap {
+    display : flex;
+  }
+  .qualityWrap input[type=radio] {
+    margin-left : 0.2em;
+    height : 0.9em;
+  }
+  .qualityWrap .lowQualityWrap {
+    margin-left : 0.8em;
+  }
+  .optionWrap .timeOption * {
+    display : flex;
+    border : 0;
+    display : inline-block;
+  }
+  .optionWrap .timeOption .min {
+    width : 30%;
+  }
+  .optionWrap .timeOption .min span {
+    text-align : left;
+    width : 50%;
+  }
+  .optionWrap .timeOption .min input[type=number] {
+    width : 25%;
+  }
+  .optionWrap .timeOption .sec {
+    width : 50%;
+  }
+  .optionWrap .timeOption .sec span {
+    text-align : left;
+    width : 30%;
+  }
+  .optionWrap .timeOption .sec input[type=number] {
+    width : 15%;
+    text-align : right;
+  }
+  .optionWrap input[type=submit] {
+    font-size : 1em;
+    margin-top : 0.8em;
+    padding : 0.3em;
+    border : 0;
+    background : #4876ef;
+    color : white;
+    border-radius : 0.3em;
+    transition : .2s;
+    cursor : pointer;
+  }
+  .optionWrap input[type=submit]:hover {
+    background : #2353D2;
   }
 </style>
