@@ -121,9 +121,9 @@
 </template>
 
 <script>
-import axios from 'axios';
-axios.defaults.xsrfCookieName = 'csrftoken';
-axios.defaults.xsrfHeaderName = 'x-CSRFToken';
+// import axios from 'axios';
+// axios.defaults.xsrfCookieName = 'csrftoken';
+// axios.defaults.xsrfHeaderName = 'x-CSRFToken';
 export default {
   name: 'setOptionsComp',
   props : ['fileinfo', 'filetype'],
@@ -163,7 +163,7 @@ export default {
     return {
       files : this.fileinfo,
       optionTarget : 1,
-      options
+      options,
     }
   },
   methods : {
@@ -209,12 +209,10 @@ export default {
         switch(this.filetype){
           case 'AddFileComponent' : {
             // url = 'https://twofastgif.com/convert/upload/';
-            // url = 'http://192.168.1.5:8000/convert/upload/';
             url = 'http://ec2-13-209-17-21.ap-northeast-2.compute.amazonaws.com/convert/upload/';
           }break;
           case 'AddUrlComponent' : {
             // url = 'https://twofastgif.com/convert/urlupload/';
-            // url = 'http://192.168.1.5:8000/convert/urlupload/';
             url = 'http://ec2-13-209-17-21.ap-northeast-2.compute.amazonaws.com/convert/urlupload/';
           }
         }
@@ -238,28 +236,21 @@ export default {
           formData.append(`start_${filteredIndex}`,this.returnSec(start, 'start'));
           formData.append(`end_${filteredIndex}`,this.returnSec(end, 'end'));
         });
-
-        axios.post(url, formData)
-        .then(res => {
-          console.log(res)
+        // axios.post(url, formData)
+        // .then(res => {
+        //   console.log(res)
+        // })
+        fetch(url, {
+          method : 'POST',
+          body : formData
         })
-        // fetch(url, {
-        //   method : 'POST',
-        //   headers: {
-        //     // 'Accept' : 'application/json, */*',
-        //     'Content-Type': 'application/json'
-        //   },
-        //   // body : JSON.stringify(formData)
-        //   // body : formData
-        //   body : JSON.stringify({text : 'test'})
-        // })
-        // .then(res => res.json())
-        // .then(data => {
-        //   console.log(data)
-        // })
-        // .catch(err => {
-        //   console.log(err)
-        // });
+        .then(res => res.json())
+        .then(data => {
+          this.$emit('setgiffiles', data); // 부모 data에 gif파일들 전달
+        })
+        .catch(err => {
+          console.log(err)
+        });
       }
     },
     // 시작시간, 종료시간 유효성검사

@@ -69,9 +69,18 @@
             :filetype="compNav"
             :fileinfo="fileInfo"
             @callalert="onAlert"
+            @setgiffiles="getGifFiles"
           >
           </OptionsComponent>
         </transition>
+      </div>
+      <!-- 완성된 gif파일들 있으면 노출 -->
+      <div class="createdGifs" v-if="gifFiles.length!==0">
+        <div v-for="gif of gifFiles" :key="gif">
+          <img :src="gif" :alt="gif">
+          <!-- 다운로드 -->
+          <a :href="gif" download>다운로드</a>
+        </div>
       </div>
       <button class="howToUseBtn" @click="showHowToUse=!showHowToUse">설명서</button>
       <HowToUseComponent v-show="showHowToUse">
@@ -102,7 +111,8 @@ export default {
       compNav : 'AddFileComponent', // 네비게이션바 클릭시 노출Comp 다르게
       alertInform : null, // 스낵바 정보보내는 객체
       optionPopup : false, // 옵션팝업
-      showHowToUse : false
+      showHowToUse : false,
+      gifFiles : []
     }
   },
   methods : {
@@ -122,6 +132,13 @@ export default {
     navChange(_compName){ // 출력 comp 변경, 파일등록방식 변경 시, 파일 담는 배열 초기화.(동시에 같은 유형의 파일만 담도록)
       this.compNav = _compName;
       this.fileInfo = [];
+    },
+    getGifFiles(value){ // gif완성된걸 객체로 받아옴
+      Object.values(value).forEach(gif => { // data gif배열에 담음
+        this.gifFiles.push(gif);
+      })
+      this.optionPopup = false; // 옵션팝업끄기
+      this.fileInfo = null; // 등록한 파일 제거
     }
   }
 }
