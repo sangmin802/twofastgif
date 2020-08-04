@@ -248,9 +248,8 @@ export default {
         
         this.$emit('gifing'); // 받아오는중
         axios.post(url, formData)
-        .then(res => {
-          console.log(res)
-          this.$emit('setgiffiles', res); // 부모 data에 gif파일들 전달
+        .then(({data}) => {
+          this.$emit('setgiffiles', data); // 부모 data에 gif파일들 전달
         })
         .catch(err => {
           this.$emit('gifing');
