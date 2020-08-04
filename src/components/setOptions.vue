@@ -79,16 +79,16 @@
             </div>
             <div class="optContent timeOption">
               <div class="min">
-                <input @keydown.prevent v-model="options[index].start.FM" type="number" min="0" max="5">
-                <input @keydown.prevent v-model="options[index].start.SM" type="number" min="0" max="9">
+                <input @keyup="keyPrevent" v-model="options[index].start.FM" type="number" :data-index="index" data-type="start" data-timevalue="FM" :min="0" :max="5">
+                <input @keyup="keyPrevent" v-model="options[index].start.SM" type="number" :data-index="index" data-type="start" data-timevalue="SM" :min="0" :max="9">
                 <span>분</span>
               </div>
               <div class="sec">
-                <input @keydown.prevent v-model="options[index].start.FS" type="number" min="0" max="5">
-                <input @keydown.prevent v-model="options[index].start.SS" type="number" min="0" max="9">
+                <input @keyup="keyPrevent" v-model="options[index].start.FS" type="number" :data-index="index" data-type="start" data-timevalue="FS" :min="0" :max="5">
+                <input @keyup="keyPrevent" v-model="options[index].start.SS" type="number" :data-index="index" data-type="start" data-timevalue="SS" :min="0" :max="9">
                 :
-                <input @keydown.prevent v-model="options[index].start.FMS" type="number" min="0" max="9">
-                <input @keydown.prevent v-model="options[index].start.SMS" type="number" min="0" max="9">
+                <input @keyup="keyPrevent" v-model="options[index].start.FMS" type="number" :data-index="index" data-type="start" data-timevalue="FMS" :min="0" :max="9">
+                <input @keyup="keyPrevent" v-model="options[index].start.SMS" type="number" :data-index="index" data-type="start" data-timevalue="SMS" :min="0" :max="9">
                 <span>초</span>
               </div>
             </div>
@@ -99,16 +99,16 @@
             </div>
             <div class="optContent timeOption">
               <div class="min">
-                <input @keydown.prevent v-model="options[index].end.FM" type="number" min="0" max="5">
-                <input @keydown.prevent v-model="options[index].end.SM" type="number" min="0" max="9">
+                <input @keyup="keyPrevent" v-model="options[index].end.FM" type="number" :data-index="index" data-type="end" data-timevalue="FM" :min="0" :max="5">
+                <input @keyup="keyPrevent" v-model="options[index].end.SM" type="number" :data-index="index" data-type="end" data-timevalue="SM" :min="0" :max="9">
                 <span>분</span>
               </div>
               <div class="sec">
-                <input @keydown.prevent v-model="options[index].end.FS" type="number" min="0" max="5">
-                <input @keydown.prevent v-model="options[index].end.SS" type="number" min="0" max="9">
+                <input @keyup="keyPrevent" v-model="options[index].end.FS" type="number" :data-index="index" data-type="end" data-timevalue="FS" :min="0" :max="5">
+                <input @keyup="keyPrevent" v-model="options[index].end.SS" type="number" :data-index="index" data-type="end" data-timevalue="SS" :min="0" :max="9">
                 :
-                <input @keydown.prevent v-model="options[index].end.FMS" type="number" min="0" max="9">
-                <input @keydown.prevent v-model="options[index].end.SMS" type="number" min="0" max="9">
+                <input @keyup="keyPrevent" v-model="options[index].end.FMS" type="number" :data-index="index" data-type="end" data-timevalue="FMS" :min="0" :max="9">
+                <input @keyup="keyPrevent" v-model="options[index].end.SMS" type="number" :data-index="index" data-type="end" data-timevalue="SMS" :min="0" :max="9">
                 <span>초</span>
               </div>
             </div>
@@ -172,6 +172,14 @@ export default {
       const possible = [];
       this.options.forEach(res => {
         const {start, end} = res;
+        ['FM', 'SM', 'FS', 'SS', 'FMS', 'SMS'].forEach(time => {
+          if(start[time]===''){
+            start[time] = 0
+          }
+          if(end[time]===''){
+            end[time] = 0
+          }
+        });
         const target = res.file.name || res.file;
         let startTime = this.changeToFullcount(start);
         let endTime = this.changeToFullcount(end);
@@ -202,7 +210,6 @@ export default {
       if(impossible.length !== 0){
         this.$emit('callalert', impossible, 'fileOptionsError')
       }else{
-        console.log('정상진행')
         const options = [...this.options];
         let formData = new FormData(); // Ajax통신할 객체
         let url = null;
@@ -240,12 +247,16 @@ export default {
         // .then(res => {
         //   console.log(res)
         // })
+        this.$emit('callalert', null, 'gifIng'); // 받아오는중
         fetch(url, {
           method : 'POST',
           body : formData
         })
-        .then(res => res.json())
+        .then(res => {
+          return res.json();
+        })
         .then(data => {
+          console.log(data)
           this.$emit('setgiffiles', data); // 부모 data에 gif파일들 전달
         })
         .catch(err => {
@@ -282,22 +293,31 @@ export default {
         }
       }
       return result;
+    },
+    keyPrevent(e){ // 숫자랑 방향키 지우기만 가능하게
+      const {target : {max, value, dataset : {index, type, timevalue}}} = e;
+      const allowCodes = [8,9,37,39,46,48,49,50,51,52,53,54,55,56,57,96,97,98,99,100,101,102,103,104,105];
+      const allow = allowCodes.indexOf(e.keyCode);
+      if(allow===-1){
+        e.preventDefault()
+      }else{
+        switch(max){
+          case '5' : 
+            if(Number(value > 5)){ // 값이 5보다크면 5로
+              this.options[Number(index)][type][timevalue] = 5;
+            }
+          break;
+          case '9' : 
+            if(Number(value > 9)){ // 값이 9보다크면 9로
+              this.options[Number(index)][type][timevalue] = 9;
+            }
+          break;
+        }
+      }
     }
   }
 }
 </script>
-https://twofastgif.com/convert/upload/
-https://twofastgif.com/convert/urlupload/
-first_uploaded_file : null,
-second_uploaded_file : null,
-scaleValue_select_1 : "변환할 동영상 해상도(기본)",
-scaleValue_select_2 : "변환할 동영상 해상도(기본)",
-fps_value_1 : 15,
-fps_value_2 : 15,
-start_1 : 0,
-start_2 : 0,
-end_1 : -1.0,
-end_2 : -1.0,
 <style>
   #setOptionsComp {
     position : absolute;
@@ -369,21 +389,22 @@ end_2 : -1.0,
   }
   .optionWrap .timeOption .min span {
     text-align : left;
-    width : 50%;
+    width : 40%;
   }
   .optionWrap .timeOption .min input[type=number] {
-    width : 25%;
+    text-align : center;
+    width : 30%;
   }
   .optionWrap .timeOption .sec {
     width : 50%;
   }
   .optionWrap .timeOption .sec span {
     text-align : left;
-    width : 30%;
+    width : 10%;
   }
   .optionWrap .timeOption .sec input[type=number] {
-    width : 15%;
-    text-align : right;
+    width : 20%;
+    text-align : center;
   }
   .optionWrap input[type=submit] {
     font-size : 1em;

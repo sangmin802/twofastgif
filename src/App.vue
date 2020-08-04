@@ -46,7 +46,7 @@
             <span class="limitLength" v-if="typeof data === 'string'">
               {{data}}
             </span>
-            <span class="cancelFile" @click="remove(index)">취소</span>
+            <span class="cancelFile" @click="remove(index)">✖</span>
           </li>
         </ul>
         <!-- 옵션 설정 팝업 노출 버튼 -->
@@ -76,10 +76,15 @@
       </div>
       <!-- 완성된 gif파일들 있으면 노출 -->
       <div class="createdGifs" v-if="gifFiles.length!==0">
-        <div v-for="gif of gifFiles" :key="gif">
-          <img :src="gif" :alt="gif">
+        <div v-for="gif of gifFiles" :key="gif" class="gifCont">
+          <div class="gifImgWrap">
+            <img :src="gif" :alt="gif">
+          </div>
           <!-- 다운로드 -->
           <a :href="gif" download>다운로드</a>
+        </div>
+        <div class="gifNotes">
+          * 추가진행시 이전에 변환한 gif는 사라집니다!
         </div>
       </div>
       <button class="howToUseBtn" @click="showHowToUse=!showHowToUse">설명서</button>
@@ -111,7 +116,7 @@ export default {
       compNav : 'AddFileComponent', // 네비게이션바 클릭시 노출Comp 다르게
       alertInform : null, // 스낵바 정보보내는 객체
       optionPopup : false, // 옵션팝업
-      showHowToUse : false,
+      showHowToUse : true,
       gifFiles : []
     }
   },
@@ -134,9 +139,11 @@ export default {
       this.fileInfo = [];
     },
     getGifFiles(value){ // gif완성된걸 객체로 받아옴
+    this.gifFiles = [];
       Object.values(value).forEach(gif => { // data gif배열에 담음
         this.gifFiles.push(gif);
       })
+      this.alertInform = null // 스낵바 끄기
       this.optionPopup = false; // 옵션팝업끄기
       this.fileInfo = null; // 등록한 파일 제거
     }
@@ -145,6 +152,13 @@ export default {
 </script>
 
 <style>
+  html { font-size : 16px;}
+  @media all and (min-width:768px) and (max-width:1024px) {
+    html { font-size : 14px;}
+  }
+  @media screen and (max-width: 767px){
+    html { font-size : 12px; }
+  }
   * {
     margin : 0; padding : 0; list-style : none; text-decoration : none; box-sizing : border-box; outline : none;
   }
@@ -196,6 +210,7 @@ export default {
   }
   .contWrap .title {
     font-size : 2em;
+    line-height : 4em;
     font-weight : bold;
     color : #333;
   }
@@ -266,10 +281,42 @@ export default {
   .setOptionsBtn span:hover {
     color : #111;
   }
+  /* 완성된 gif */
+  .createdGifs {
+    margin-top : 1em;
+  }
+  .createdGifs .gifCont {
+    margin-top : 1em;
+    display : flex;
+    justify-content : space-between;
+    align-items : center;
+    padding : 0.5em;
+    border : 1px solid #eaeaea;
+    border-radius : 0.3em;
+  }
+  .createdGifs .gifCont a {
+    color : white;
+    margin-right : 0.5em;
+    padding : 0.3em;
+    background : #4876ef;
+    border-radius : 0.3em;
+    font-size : 0.9em;
+  }
+  .createdGifs .gifCont .gifImgWrap {
+    width : 60%;
+  }
+  .createdGifs .gifCont .gifImgWrap img {
+    display : block;
+    width : 100%;
+  }
+  .gifNotes {
+    padding : 0.5em 0 0 0.5em;
+    color : tomato;
+    font-size : 0.6em;
+  }
 
 
-
-
+  /* 동적스타일 */
   .target {
     color : #333 !important;
     font-weight : bold !important;

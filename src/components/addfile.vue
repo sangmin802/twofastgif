@@ -82,10 +82,10 @@ export default {
 <style>
   .fileLabel {
     display : block;
-    height : 300px;
+    height : 100px;
     background : #eaeaea;
     text-align : center;
-    line-height : 300px;
+    line-height : 100px;
     border : 2px solid #666666;
   }
   #addFile {

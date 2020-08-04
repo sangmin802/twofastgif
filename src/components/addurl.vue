@@ -91,11 +91,15 @@ export default {
     margin-bottom : 0.5em;
   }
   #addurlComp p input[type="text"] {
+    display : inline-block;
+    width : 80%;
     border : 0;
     border-bottom : 1px solid #eaeaea;
     padding : 0.3em;
+    font-size : 0.9em;
   }
   #addurlComp p input[type="submit"] {
+    font-size : 0.9em;
     border : 0;
     padding : 0.3em;
     margin-top : 0.5em;
