@@ -216,11 +216,13 @@ export default {
         switch(this.filetype){
           case 'AddFileComponent' : {
             // url = 'https://twofastgif.com/convert/upload/';
-            url = 'http://ec2-13-209-17-21.ap-northeast-2.compute.amazonaws.com/convert/upload/';
+            url = 'convert/upload/';
+            // url = 'http://ec2-13-209-17-21.ap-northeast-2.compute.amazonaws.com/convert/upload/';
           }break;
           case 'AddUrlComponent' : {
             // url = 'https://twofastgif.com/convert/urlupload/';
-            url = 'http://ec2-13-209-17-21.ap-northeast-2.compute.amazonaws.com/convert/urlupload/';
+            url = 'convert/urlupload/';
+            // url = 'http://ec2-13-209-17-21.ap-northeast-2.compute.amazonaws.com/convert/urlupload/';
           }
         }
         
