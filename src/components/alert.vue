@@ -5,20 +5,33 @@
     <div class="title"
       v-if="type!=='gifIng'"
     >알림</div>
-    <div v-if="type==='overSize'">
-      <ul >
-        <li v-for="(name, index) of value" :key="name" class="limitLength">
-          {{index+1}}. {{name}}
-        </li>
-      </ul>
-      <div>위 파일의 용량이 최대 허용량 초과입니다.</div>
+    <div v-if="type==='unValidFile'">
+      <div v-if="value[0].length!==0">
+        <ul>
+          <li v-for="(name, index) of value[0]" :key="name" class="unValid">
+            {{index+1}}. {{name}}
+          </li>
+        </ul>
+        <div>위 파일의 용량이 최대 허용량 초과입니다.</div>
+      </div>
+      <div v-if="value[1].length!==0">
+        <ul>
+          <li v-for="(name, index) of value[1]" :key="name" class="unValid">
+            {{index+1}}. {{name}}
+          </li>
+        </ul>
+        <div>지원하지 않는 파일 형식입니다.</div>
+      </div>
+    </div>
+    <div v-if="type==='httpError'">
+      {{value}}
     </div>
     <div v-if="type==='overLength'" class="overLength">
       {{value}}
     </div>
     <div v-if="type==='unVerifyUrls'">
       <ul>
-        <li v-for="(name, index) of value" :key="name" class="limitLength">
+        <li v-for="(name, index) of value" :key="name" class="unValid">
           {{index+1}}. {{name}}
         </li>
       </ul>
@@ -26,14 +39,11 @@
     </div>
     <div v-if="type==='fileOptionsError'">
       <ul>
-        <li v-for="(name, index) of value" :key="name" class="limitLength">
+        <li v-for="(name, index) of value" :key="name" class="unValid">
           {{index+1}}. {{name}}
         </li>
       </ul>
       <div>시작시간이 종료시간보다 크거나 같습니다.</div>
-    </div>
-    <div v-if="type==='gifIng'">
-      <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
     </div>
   </div>
 </template>
@@ -83,7 +93,7 @@ export default {
     margin : 1em 0 0 0.3em;
     font-size : 0.8em;
   }
-  .limitLength {
+  .unValid {
     width : 100%;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -92,84 +102,4 @@ export default {
   .backgroundNone {
     background : none !important;
   }
-.lds-spinner {
-  color: official;
-  display: inline-block;
-  position: relative;
-  width: 80px;
-  height: 80px;
-  left : 50%;
-  transform : translate(-50%);
-}
-.lds-spinner div {
-  transform-origin: 40px 40px;
-  animation: lds-spinner 1.2s linear infinite;
-}
-.lds-spinner div:after {
-  content: " ";
-  display: block;
-  position: absolute;
-  top: 3px;
-  left: 37px;
-  width: 6px;
-  height: 18px;
-  border-radius: 20%;
-  background: #fff;
-}
-.lds-spinner div:nth-child(1) {
-  transform: rotate(0deg);
-  animation-delay: -1.1s;
-}
-.lds-spinner div:nth-child(2) {
-  transform: rotate(30deg);
-  animation-delay: -1s;
-}
-.lds-spinner div:nth-child(3) {
-  transform: rotate(60deg);
-  animation-delay: -0.9s;
-}
-.lds-spinner div:nth-child(4) {
-  transform: rotate(90deg);
-  animation-delay: -0.8s;
-}
-.lds-spinner div:nth-child(5) {
-  transform: rotate(120deg);
-  animation-delay: -0.7s;
-}
-.lds-spinner div:nth-child(6) {
-  transform: rotate(150deg);
-  animation-delay: -0.6s;
-}
-.lds-spinner div:nth-child(7) {
-  transform: rotate(180deg);
-  animation-delay: -0.5s;
-}
-.lds-spinner div:nth-child(8) {
-  transform: rotate(210deg);
-  animation-delay: -0.4s;
-}
-.lds-spinner div:nth-child(9) {
-  transform: rotate(240deg);
-  animation-delay: -0.3s;
-}
-.lds-spinner div:nth-child(10) {
-  transform: rotate(270deg);
-  animation-delay: -0.2s;
-}
-.lds-spinner div:nth-child(11) {
-  transform: rotate(300deg);
-  animation-delay: -0.1s;
-}
-.lds-spinner div:nth-child(12) {
-  transform: rotate(330deg);
-  animation-delay: 0s;
-}
-@keyframes lds-spinner {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
 </style>

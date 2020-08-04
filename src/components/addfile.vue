@@ -9,7 +9,7 @@
       >
         Upload File
       </label>
-      <input type="file" id="addFile">
+      <input @change="clickAddFile" type="file" id="addFile">
     </form>
   </div>
 </template>
@@ -19,11 +19,49 @@ export default {
   name : 'AddFile',
   data(){
     return {
-
+      limitSize : 52428800,
+      types : [
+        'video/avi',
+        'video/x-flv',
+        'video/x-ms-wmv',
+        'video/quicktime',
+        'video/mp4',
+        'video/webm',
+        'video/x-matroska',
+        'video/mpeg'
+      ],
     }
   },
   methods : {
+    clickAddFile(e){
+      const {target : {files}} = e;
+      this.shareFileValid(files);
+    },
+    shareFileValid(_files){
+      const overLimitArr = []; // 용량초과담는거
+      const unValidTypeArr = []; // 파일타입적합x
+      const validArr = []; // 용량가능담는거
+      _files.forEach(file => { // 용량, 타입 구분
+        if(file.size > this.limitSize){
+          overLimitArr.push(file);
+        }else{
+          if(!this.types.includes(file.type)){
+            unValidTypeArr.push(file);
+          }else{
+            validArr.push(file);
+          }
+        }
+      })
 
+      if(overLimitArr.length !== 0 || unValidTypeArr.length !== 0){ // 구분후, 용량초과하는거 혹은 타입에러 있으면 스낵바로 출력시키고 등록안되게
+        const nameWrap = [[...overLimitArr].map(res => res.name), [...unValidTypeArr].map(res => res.name)];
+        this.$emit('callalert', nameWrap, 'unValidFile');
+      }else{ // 용량 문제, 타입 문제 없다면, App / data값에 file 넣어줌
+        validArr.forEach(file => {
+          this.$emit('updatevideo', file);
+        });
+      }
+    }
   },
   directives : { // 사용자 설정 디렉티브
     multidefault : { // 다수의 이벤트 디폴트
@@ -45,32 +83,7 @@ export default {
       bind(el, {value : {evt}}, vnode){
         evt.forEach(res => {
           el.addEventListener(res, ({dataTransfer : {files}}) => {
-            const overLimitArr = []; // 용량초과담는거
-            const underLmitArr = []; // 용량가능담는거
-            const limitSize = 52428800;
-
-            files.forEach(file => { // 용량 구분
-              if(file.size > limitSize){
-                overLimitArr.push(file);
-              }else{
-                underLmitArr.push(file);
-              }
-            })
-
-            if(overLimitArr.length !== 0){ // 구분후, 용량초과하는거 있으면 스낵바로 출력시키고 등록안되게
-              const nameWrap = [...overLimitArr].map(res => res.name)
-              vnode.context.$emit('callalert', nameWrap, 'overSize');
-            }else{ // 용량 문제 없다면, App / data값에 file 넣어줌
-              underLmitArr.forEach(file => {
-                vnode.context.$emit('updatevideo', file);
-                // 푸는것은 서버에서
-                // const fileReader = new FileReader();
-                // fileReader.readAsDataURL(file);
-                // fileReader.onload = ({target : {result}}) => {
-                //   console.log(result)
-                // }
-              });
-            }
+            vnode.context.shareFileValid(files);
           });
         });
       }

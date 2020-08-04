@@ -3,8 +3,12 @@
   <div id="app">
     <!-- 옵션 켰을 때, 검은 뒷배경 -->
     <div class="optionsBg" v-if="optionPopup" @click="optionPopup = false"></div>
-      <!-- 스낵바 떴을 때, 검은 뒷배경 -->
+    <!-- 스낵바 떴을 때, 검은 뒷배경 -->
     <div class="alertBg" v-if="alertInform" @click="alertInform = null"></div>
+    <!-- 진행중 -->
+    <div class="gifIng" v-if="gifIng===true">
+      <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+    </div>
     <!-- 스낵바 컴포넌트 -->
     <!-- alertobj = 스낵바 내용과, 타입을 담고있는 속성 -->
     <transition name="alert">
@@ -70,6 +74,7 @@
             :fileinfo="fileInfo"
             @callalert="onAlert"
             @setgiffiles="getGifFiles"
+            @gifing="gifIng=!gifIng"
           >
           </OptionsComponent>
         </transition>
@@ -117,6 +122,7 @@ export default {
       alertInform : null, // 스낵바 정보보내는 객체
       optionPopup : false, // 옵션팝업
       showHowToUse : true,
+      gifIng : false,
       gifFiles : []
     }
   },
@@ -177,6 +183,14 @@ export default {
     height : 100vh;
   }
   .alertBg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background : rgba(0,0,0,0.4);
+    z-index : 9;
+    top : 0;
+  }
+  .gifIng {
     width: 100%;
     height: 100%;
     position: absolute;
@@ -326,5 +340,88 @@ export default {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+  }
+
+  /* gifIng */
+  .lds-spinner {
+    color: official;
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+    top : 30%;
+    left : 50%;
+    transform : translate(-50%, -50%);
+  }
+  .lds-spinner div {
+    transform-origin: 40px 40px;
+    animation: lds-spinner 1.2s linear infinite;
+  }
+  .lds-spinner div:after {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 3px;
+    left: 37px;
+    width: 6px;
+    height: 18px;
+    border-radius: 20%;
+    background: #fff;
+  }
+  .lds-spinner div:nth-child(1) {
+    transform: rotate(0deg);
+    animation-delay: -1.1s;
+  }
+  .lds-spinner div:nth-child(2) {
+    transform: rotate(30deg);
+    animation-delay: -1s;
+  }
+  .lds-spinner div:nth-child(3) {
+    transform: rotate(60deg);
+    animation-delay: -0.9s;
+  }
+  .lds-spinner div:nth-child(4) {
+    transform: rotate(90deg);
+    animation-delay: -0.8s;
+  }
+  .lds-spinner div:nth-child(5) {
+    transform: rotate(120deg);
+    animation-delay: -0.7s;
+  }
+  .lds-spinner div:nth-child(6) {
+    transform: rotate(150deg);
+    animation-delay: -0.6s;
+  }
+  .lds-spinner div:nth-child(7) {
+    transform: rotate(180deg);
+    animation-delay: -0.5s;
+  }
+  .lds-spinner div:nth-child(8) {
+    transform: rotate(210deg);
+    animation-delay: -0.4s;
+  }
+  .lds-spinner div:nth-child(9) {
+    transform: rotate(240deg);
+    animation-delay: -0.3s;
+  }
+  .lds-spinner div:nth-child(10) {
+    transform: rotate(270deg);
+    animation-delay: -0.2s;
+  }
+  .lds-spinner div:nth-child(11) {
+    transform: rotate(300deg);
+    animation-delay: -0.1s;
+  }
+  .lds-spinner div:nth-child(12) {
+    transform: rotate(330deg);
+    animation-delay: 0s;
+  }
+  @keyframes lds-spinner {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
   }
 </style>

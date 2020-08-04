@@ -121,9 +121,9 @@
 </template>
 
 <script>
-// import axios from 'axios';
-// axios.defaults.xsrfCookieName = 'csrftoken';
-// axios.defaults.xsrfHeaderName = 'x-CSRFToken';
+import axios from 'axios';
+axios.defaults.xsrfCookieName = 'csrftoken';
+axios.defaults.xsrfHeaderName = 'x-CSRFToken';
 export default {
   name: 'setOptionsComp',
   props : ['fileinfo', 'filetype'],
@@ -216,12 +216,12 @@ export default {
         switch(this.filetype){
           case 'AddFileComponent' : {
             // url = 'https://twofastgif.com/convert/upload/';
-            url = 'convert/upload/';
+            url = '/convert/upload/';
             // url = 'http://ec2-13-209-17-21.ap-northeast-2.compute.amazonaws.com/convert/upload/';
           }break;
           case 'AddUrlComponent' : {
             // url = 'https://twofastgif.com/convert/urlupload/';
-            url = 'convert/urlupload/';
+            url = '/convert/urlupload/';
             // url = 'http://ec2-13-209-17-21.ap-northeast-2.compute.amazonaws.com/convert/urlupload/';
           }
         }
@@ -245,25 +245,32 @@ export default {
           formData.append(`start_${filteredIndex}`,this.returnSec(start, 'start'));
           formData.append(`end_${filteredIndex}`,this.returnSec(end, 'end'));
         });
-        // axios.post(url, formData)
-        // .then(res => {
-        //   console.log(res)
-        // })
-        this.$emit('callalert', null, 'gifIng'); // 받아오는중
-        fetch(url, {
-          method : 'POST',
-          body : formData
-        })
+        
+        this.$emit('gifing'); // 받아오는중
+        axios.post(url, formData)
         .then(res => {
-          return res.json();
-        })
-        .then(data => {
-          console.log(data)
-          this.$emit('setgiffiles', data); // 부모 data에 gif파일들 전달
+          console.log(res)
+          this.$emit('setgiffiles', res); // 부모 data에 gif파일들 전달
         })
         .catch(err => {
+          this.$emit('gifing');
+          this.$emit('callalert', err, 'httpError');
           console.log(err)
         });
+        // fetch(url, {
+        //   method : 'POST',
+        //   body : formData
+        // })
+        // .then(res => {
+        //   return res.json();
+        // })
+        // .then(data => {
+        //   console.log(data)
+        //   this.$emit('setgiffiles', data); // 부모 data에 gif파일들 전달
+        // })
+        // .catch(err => {
+        //   console.log(err)
+        // });
       }
     },
     // 시작시간, 종료시간 유효성검사
