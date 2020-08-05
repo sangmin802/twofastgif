@@ -245,17 +245,20 @@ export default {
           formData.append(`start_${filteredIndex}`,this.returnSec(start, 'start'));
           formData.append(`end_${filteredIndex}`,this.returnSec(end, 'end'));
         });
-        
+
         this.$emit('gifing'); // 받아오는중
         axios.post(url, formData)
-        .then(({data}) => {
-          this.$emit('setgiffiles', data); // 부모 data에 gif파일들 전달
+        .then(({data : {dict_urls}}) => {
+          dict_urls['err_message'] ?
+            this.$emit('callalert', dict_urls['err_message'], 'ajaxError')
+          :
+            this.$emit('setgiffiles', dict_urls); // 부모 data에 gif파일들 전달
         })
         .catch(err => {
           this.$emit('gifing');
           this.$emit('callalert', err, 'httpError');
-          console.log(err)
         });
+
         // fetch(url, {
         //   method : 'POST',
         //   body : formData

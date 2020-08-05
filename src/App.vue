@@ -18,13 +18,15 @@
       >
       </alert-component>
     </transition>
-    <div class="contWrap">
-      <div class="title">움짤생성기</div>
+    <div class="header">
+      <div class="title">Two Fast Gif</div>
       <div class="tabBtnWrap">
         <!-- compNav 말그대로 컴포넌트 변경 네비게이션 -->
         <span class="tabBtn" :class="{target : compNav==='AddFileComponent'}" @click="navChange('AddFileComponent')">파일</span>
         <span class="tabBtn" :class="{target : compNav==='AddUrlComponent'}" @click="navChange('AddUrlComponent')">url</span>
       </div>
+    </div>
+    <div class="contWrap">
       <!-- 위의 네비게이션 버튼을 통해 출력하는 컴포넌트 -->
       <!-- :is="compNav" data의 compNav를 통해 감지 -->
       <!-- callalert = 스낵바 메소드 전달 -->
@@ -85,7 +87,6 @@
           <div class="gifImgWrap">
             <img :src="gif" :alt="gif">
           </div>
-          <!-- 다운로드 -->
           <a :href="gif" download>다운로드</a>
         </div>
         <div class="gifNotes">
@@ -145,13 +146,14 @@ export default {
       this.fileInfo = [];
     },
     getGifFiles(value){ // gif완성된걸 객체로 받아옴
-    this.gifFiles = [];
+      this.gifFiles = [];
       Object.values(value).forEach(gif => { // data gif배열에 담음
         this.gifFiles.push(gif);
       })
       this.alertInform = null // 스낵바 끄기
       this.optionPopup = false; // 옵션팝업끄기
-      this.fileInfo = null; // 등록한 파일 제거
+      this.fileInfo = []; // 등록한 파일 제거
+      this.gifIng = false; // 변환중 끄기
     }
   }
 }
@@ -214,31 +216,44 @@ export default {
     background : rgba(0,0,0,0.4);
     top : 0;
   }
+  /* 헤더 */
+  .header {
+    width : 70%;
+    margin : 0 auto;
+  }
+  .header .title {
+    font-size : 3em;
+    line-height : 3em;
+    font-weight : bold;
+    color : white;
+  }
+  .header .tabBtnWrap {
+    font-size : 1.1em;
+  }
+  .header .tabBtn {
+    min-width : 60px;
+    display : inline-block;
+    background : #eaeaea;
+    cursor : pointer;
+    padding : 0.5em;
+    color : #888;
+  }
+  .header .tabBtn:first-child {
+    border-radius : 0.3em 0 0 0;
+  }
+  .header .tabBtn:last-child {
+    border-radius : 0 0.3em 0 0;
+  }
+  .header .tabBtn:nth-child(1) {
+    margin-left : 0;
+  }
   /* 그 외 컨텐츠 */
   .contWrap {
     width : 70%;
     margin : 0 auto;
     padding : 2em;
     background : white;
-    border-radius : 0.3em;
-  }
-  .contWrap .title {
-    font-size : 2em;
-    line-height : 4em;
-    font-weight : bold;
-    color : #333;
-  }
-  .contWrap .tabBtnWrap {
-    margin : 0.5em 0;
-    font-size : 1.1em;
-    color : #666;
-  }
-  .contWrap .tabBtn {
-    margin-left : 1em;
-    cursor : pointer;
-  }
-  .contWrap .tabBtn:nth-child(1) {
-    margin-left : 0;
+    border-radius : 0 0.3em 0.3em 0.3em;
   }
   .contWrap .howToUseBtn {
     border : none;
@@ -332,8 +347,9 @@ export default {
 
   /* 동적스타일 */
   .target {
-    color : #333 !important;
-    font-weight : bold !important;
+    color : #444 !important;
+    background : white !important;
+    font-weight : bold;
   }
   .limitLength {
     width : 90%;

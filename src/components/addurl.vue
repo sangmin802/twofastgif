@@ -1,12 +1,5 @@
 <template>
   <div id="addurlComp">
-    <!-- <div class="urlTitle">URL 등록하기</div> -->
-    <!-- <p>
-      <button @click="moreUrl = !moreUrl">
-        <span v-if="!moreUrl">추가하기</span>
-        <span v-if="moreUrl">제거하기</span>
-      </button>
-    </p> -->
     <form @submit.prevent="onSubmit" >
       <p>
         <input type="text" v-model="url1" placeholder="URL 1">

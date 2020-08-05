@@ -1,10 +1,6 @@
 <template>
-  <div id="alertComp"
-    :class="{backgroundNone : type==='gifIng'}"
-  >
-    <div class="title"
-      v-if="type!=='gifIng'"
-    >알림</div>
+  <div id="alertComp">
+    <div class="title">알림</div>
     <div v-if="type==='unValidFile'">
       <div v-if="value[0].length!==0">
         <ul>
@@ -24,6 +20,9 @@
       </div>
     </div>
     <div v-if="type==='httpError'">
+      {{value}}
+    </div>
+    <div v-if="type==='ajaxError'">
       {{value}}
     </div>
     <div v-if="type==='overLength'" class="overLength">
@@ -98,8 +97,5 @@ export default {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-  }
-  .backgroundNone {
-    background : none !important;
   }
 </style>
