@@ -248,11 +248,11 @@ export default {
 
         this.$emit('gifing'); // 받아오는중
         axios.post(url, formData)
-        .then(({data : {dict_urls}}) => {
-          dict_urls['err_message'] ?
-            this.$emit('callalert', dict_urls['err_message'], 'ajaxError')
+        .then(({data}) => {
+          data['err_message'] ?
+            this.$emit('callalert', data['err_message'], 'ajaxError')
           :
-            this.$emit('setgiffiles', dict_urls); // 부모 data에 gif파일들 전달
+            this.$emit('setgiffiles', data); // 부모 data에 gif파일들 전달
         })
         .catch(err => {
           this.$emit('gifing');
