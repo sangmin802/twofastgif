@@ -1,7 +1,7 @@
 
 <template>
   <div id="app"
-    :class="{overflowHidden : isPop===true}"
+    :class="{overflowHidden : isPop || !isShownMain}"
   >
     <!-- 옵션 켰을 때, 검은 뒷배경 -->
     <div class="optionsBg" v-if="optionPopup" @click="optionPopup = false"></div>
@@ -39,8 +39,12 @@
       <div class="title">Two Fast Gif</div>
     </div>
     <div class="contWrap"
-      @mousedown="touchStart"
-      @mousemove="touchMove"
+      v-touch:start="touchStart"
+      v-touch:end="touchEventReset"
+      v-touch:moving="touchMove"
+      @mouseleave="touchEventReset"
+      :style="{transform : `translate(${position}%)`}"
+      :class="{transition : isNowMoving}"
     >
       <div class="left">
         <ScrollPage>
@@ -149,8 +153,12 @@ export default {
       optionPopup : false, // 옵션팝업
       showHowToUse : true, // 간단사용설명서 보기
       gifIng : false, // gif진행중인 이미지
-      gifFiles : [],
-      startPoint : null
+      gifFiles : [], // gif담긴배열
+      startPoint : null, // 터치시작
+      gap : null, // 터치시작, 이동 차이
+      isNowMoving : false, // 현재 터치이동값 유효로인해 스크롤로 움직이고있냐
+      isShownMain : true, // 현재 메인이 보이냐 안보이냐
+      position : 0, // contWrap 이동값
     }
   },
   methods : {
@@ -181,13 +189,99 @@ export default {
       this.fileInfo = []; // 등록한 파일 제거
       this.gifIng = false; // 변환중 끄기
     },
-    touchStart(e){
-      this.touchStart
-      console.log(e.clientX)
-      
+    // vue는 vue-touch라는 npm을통해 터치나 마우스이벤트를 한번에 사용 가능하다.
+    touchStart(e){ // 스크롤시작
+      let clientX = null;
+      if(e.type.includes('touch')){
+        clientX = e.touches[0].clientX;
+      }else{
+        clientX = e.clientX;
+      }
+      this.startPoint = clientX; // 시작지점 선정
     },
-    touchMove(e){
-      // console.log(e)
+    touchMove(e){ // 스크롤 방향 감지 함수
+      let clientX = null; // 이동거리
+      if(e.type.includes('touch')){
+        clientX = e.touches[0].clientX;
+      }else{
+        clientX = e.clientX;
+      }
+      this.gap = this.startPoint-clientX; // 이동거리계산
+      const deviceWidth = window.innerWidth; // 기기의 너비
+      const senseRange = deviceWidth*0.3; // 기기너비의 50%넘어가면 슬라이드
+
+      // 시작지점이 있으며, 슬라이딩중이 아닐경우만
+      if(this.startPoint && !this.isNowMoving){
+        // 이동범위50%일 경우, 슬라이딩
+        if(this.gap >= senseRange || this.gap <= -senseRange){
+          let type = null;
+          if(this.gap >= senseRange){
+            type = 'right';
+          }else if(this.gap <= -senseRange){
+            type = 'left';
+          }
+          this.moving(type)
+          .then(() => {
+            // 슬라이딩 이후, 시작지점및 슬라이딩여부 초기화
+            this.startPoint = null;
+            this.isNowMoving = false;          
+          })
+        }else{ // 이동범위50%내부가 아닐경우 자연스럽게움직임
+          this.beforeMoving(deviceWidth);
+        }
+      }else{
+        return;
+      }
+    },
+    beforeMoving(_w){
+      const max = 105;
+      let gap = this.gap;
+      if(gap < 0) gap = gap*-1;
+      if(this.startPoint){
+        const result = (gap/_w)*max; 
+        if(this.gap < 0){
+          // 왼쪽으로갈때
+          if(this.isShownMain) this.position = result;
+          return;
+        }else{
+          // 오른쪽으로갈때
+          if(!this.isShownMain) this.position = max -result;
+          return;
+        }
+      }
+    },
+    moving(type){
+      return new Promise((res) => {
+      this.isNowMoving = true;
+      // 현재 우측이보이는지 좌측이보이는지에 따라 우측이보일경우 오른쪽슬라이딩 비활성화
+        switch(type){
+          case 'right' : {
+            if(this.isShownMain===true) res();
+            // 오른쪽거보여줘
+            this.isShownMain = true;
+            this.position = 0;
+          }break;
+          case 'left' : {
+            if(this.isShownMain===false) res();
+            // 왼쪽거보여줘
+            this.isShownMain = false;
+            this.position = 105;
+          }break;
+        }
+        setTimeout(() => {
+          res();
+        }, 300)
+      })
+    },
+    touchEventReset(){
+      if(this.isShownMain){
+        this.position = 0;
+      }else{
+        this.position = 105;
+      }
+      this.gap = null;
+      this.isNowMoving = false;
+      this.startPoint = null;      
     }
   }
 }
@@ -202,12 +296,16 @@ export default {
     html { font-size : 12px; }
   }
   * {
-    margin : 0; padding : 0; list-style : none; text-decoration : none; box-sizing : border-box; outline : none;
+    margin : 0; padding : 0; list-style : none; text-decoration : none; box-sizing : border-box; outline : none; user-select : none;
+  }
+  ::selection {
+    background-color: transparent;
   }
   /* body { 
     overflow-y : scroll;
   } */
   #app {
+    overflow-x : hidden;
     background : #4876ef;
     min-height : 100vh;
     padding : 2em 0 2em;
@@ -215,7 +313,7 @@ export default {
   /* 팝업켜져서 검은 배경 생겼을 때 overflow hidden */
   .overflowHidden {
     height : 100vh;
-    overflow : hidden;
+    overflow-y : hidden;
   }
   /* 스낵바 관련 */
   .alertWrap {
@@ -272,7 +370,6 @@ export default {
     width : 80%;
     margin : 0 auto;
     position : relative;
-    /* display : flex; */
   }
   /* 컨텐츠 좌측 */
   .left {
@@ -414,6 +511,10 @@ export default {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+  }
+  .transition {
+    transition : .3s;
+    transition-timing-function : ease-out;
   }
 
   /* gifIng */

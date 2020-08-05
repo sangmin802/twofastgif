@@ -100,11 +100,11 @@ export default {
     text-align : center;
     line-height : 100px;
     border : 2px solid #666666;
+    cursor : pointer;
   }
   #addFile {
     display : none;
   }
-
   .dragTarget {
     border : 2px dashed #666666;
   }
