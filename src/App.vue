@@ -18,84 +18,91 @@
       >
       </alert-component>
     </transition>
-    <div class="header">
+    <div class="mainHeader">
       <div class="title">Two Fast Gif</div>
-      <div class="tabBtnWrap">
-        <!-- compNav 말그대로 컴포넌트 변경 네비게이션 -->
-        <span class="tabBtn" :class="{target : compNav==='AddFileComponent'}" @click="navChange('AddFileComponent')">파일</span>
-        <span class="tabBtn" :class="{target : compNav==='AddUrlComponent'}" @click="navChange('AddUrlComponent')">url</span>
-      </div>
     </div>
     <div class="contWrap">
-      <!-- 위의 네비게이션 버튼을 통해 출력하는 컴포넌트 -->
-      <!-- :is="compNav" data의 compNav를 통해 감지 -->
-      <!-- callalert = 스낵바 메소드 전달 -->
-      <!-- updatevideo = url이나 파일 부모data에 등록하는 메소드 전달 -->
-      <component 
-        :is="compNav"
-
-        @callalert="onAlert"
-        @updatevideo="updateVideoInfo"
-      ></component>
-      <!-- 등록된 파일이 있을 때만 노출되는 옵션설정 돔 -->
-      <div 
-        class="afterAddedWrap" 
+      <div class="left">
         
-        v-if="fileInfo.length!==0"
-      >
-        <div class="addedFileList">등록된 파일</div>
-        <ul>
-          <li class="addedfile" v-for="(data, index) of fileInfo" :key = "index">
-            <span class="limitLength" v-if="typeof data === 'object'">
-              {{data.name}}
-            </span>
-            <span class="limitLength" v-if="typeof data === 'string'">
-              {{data}}
-            </span>
-            <span class="cancelFile" @click="remove(index)">✖</span>
-          </li>
-        </ul>
-        <!-- 옵션 설정 팝업 노출 버튼 -->
-        <div 
-          class="setOptionsBtn"
-
-          @click="optionPopup = true"
-        >
-          <span>
-            옵션 설정하기
-          </span>
+      </div>
+      <div class="right">
+        <div class="tabBtnWrap">
+          <!-- compNav 말그대로 컴포넌트 변경 네비게이션 -->
+          <span class="tabBtn" :class="{target : compNav==='AddFileComponent'}" @click="navChange('AddFileComponent')">파일</span>
+          <span class="tabBtn" :class="{target : compNav==='AddUrlComponent'}" @click="navChange('AddUrlComponent')">url</span>
         </div>
-        <!-- 옵션 설정 팝업 클릭 시, 노출되는 컴포넌트 -->
-        <!-- fileinfo = 등록된 최대 두개의 파일 전달 -->
-        <transition name="alert">
-          <OptionsComponent
-            class="optionPopup"
-            v-if="optionPopup"
+        <div class="rightContent">
+          <!-- 위의 네비게이션 버튼을 통해 출력하는 컴포넌트 -->
+          <!-- :is="compNav" data의 compNav를 통해 감지 -->
+          <!-- callalert = 스낵바 메소드 전달 -->
+          <!-- updatevideo = url이나 파일 부모data에 등록하는 메소드 전달 -->
+          <component 
+            :is="compNav"
 
-            :filetype="compNav"
-            :fileinfo="fileInfo"
             @callalert="onAlert"
-            @setgiffiles="getGifFiles"
-            @gifing="gifIng=!gifIng"
+            @updatevideo="updateVideoInfo"
+          ></component>
+          <!-- 등록된 파일이 있을 때만 노출되는 옵션설정 돔 -->
+          <div 
+            class="afterAddedWrap" 
+            
+            v-if="fileInfo.length!==0"
           >
-          </OptionsComponent>
-        </transition>
-      </div>
-      <!-- 완성된 gif파일들 있으면 노출 -->
-      <div class="createdGifs" v-if="gifFiles.length!==0">
-        <div v-for="gif of gifFiles" :key="gif" class="gifCont">
-          <div class="gifImgWrap">
-            <img :src="gif" :alt="gif">
+            <div class="addedFileList">등록된 파일</div>
+            <ul>
+              <li class="addedfile" v-for="(data, index) of fileInfo" :key = "index">
+                <span class="limitLength" v-if="typeof data === 'object'">
+                  {{data.name}}
+                </span>
+                <span class="limitLength" v-if="typeof data === 'string'">
+                  {{data}}
+                </span>
+                <span class="cancelFile" @click="remove(index)">✖</span>
+              </li>
+            </ul>
+            <!-- 옵션 설정 팝업 노출 버튼 -->
+            <div 
+              class="setOptionsBtn"
+
+              @click="optionPopup = true"
+            >
+              <span>
+                옵션 설정하기
+              </span>
+            </div>
+            <!-- 옵션 설정 팝업 클릭 시, 노출되는 컴포넌트 -->
+            <!-- fileinfo = 등록된 최대 두개의 파일 전달 -->
+            <transition name="alert">
+              <OptionsComponent
+                class="optionPopup"
+                v-if="optionPopup"
+
+                :filetype="compNav"
+                :fileinfo="fileInfo"
+                @callalert="onAlert"
+                @setgiffiles="getGifFiles"
+                @gifing="gifIng=!gifIng"
+              >
+              </OptionsComponent>
+            </transition>
           </div>
-          <a :href="gif" download>다운로드</a>
-        </div>
-        <div class="gifNotes">
-          * 추가진행시 이전에 변환한 gif는 사라집니다!
+          <!-- 완성된 gif파일들 있으면 노출 -->
+          <div class="createdGifs" v-if="gifFiles.length!==0">
+            <div v-for="gif of gifFiles" :key="gif" class="gifCont">
+              <div class="gifImgWrap">
+                <img :src="gif" :alt="gif">
+              </div>
+              <a :href="gif" download>다운로드</a>
+            </div>
+            <div class="gifNotes">
+              * 추가진행시 이전에 변환한 gif는 사라집니다!
+            </div>
+          </div>
+          <button class="howToUseBtn" @click="showHowToUse=!showHowToUse">설명서</button>
+          <HowToUseComponent v-show="showHowToUse">
+          </HowToUseComponent>
         </div>
       </div>
-      <button class="howToUseBtn" @click="showHowToUse=!showHowToUse">설명서</button>
-      <HowToUseComponent v-show="showHowToUse">
-      </HowToUseComponent>
     </div>
   </div>
 </template>
@@ -217,20 +224,36 @@ export default {
     top : 0;
   }
   /* 헤더 */
-  .header {
+  .mainHeader {
     width : 70%;
     margin : 0 auto;
   }
-  .header .title {
+  .mainHeader .title {
     font-size : 3em;
     line-height : 3em;
     font-weight : bold;
     color : white;
   }
-  .header .tabBtnWrap {
+  /* 그 외 컨텐츠 */
+  .contWrap {
+    width : 70%;
+    margin : 0 auto;
+    display : flex;
+  }
+  /* 컨텐츠 좌측 */
+  /* .left {
+    width : 100%;
+    height : 500px;
+    background : white;
+  } */
+  /* 컨텐츠 우측 */
+  .right {
+    width : 100%
+  }
+  .right .tabBtnWrap {
     font-size : 1.1em;
   }
-  .header .tabBtn {
+  .right .tabBtn {
     min-width : 60px;
     display : inline-block;
     background : #eaeaea;
@@ -238,24 +261,21 @@ export default {
     padding : 0.5em;
     color : #888;
   }
-  .header .tabBtn:first-child {
-    border-radius : 0.3em 0 0 0;
-  }
-  .header .tabBtn:last-child {
-    border-radius : 0 0.3em 0 0;
-  }
-  .header .tabBtn:nth-child(1) {
-    margin-left : 0;
-  }
-  /* 그 외 컨텐츠 */
-  .contWrap {
-    width : 70%;
-    margin : 0 auto;
+  .rightContent {
     padding : 2em;
     background : white;
     border-radius : 0 0.3em 0.3em 0.3em;
   }
-  .contWrap .howToUseBtn {
+  .right .tabBtn:first-child {
+    border-radius : 0.3em 0 0 0;
+  }
+  .right .tabBtn:last-child {
+    border-radius : 0 0.3em 0 0;
+  }
+  .right .tabBtn:nth-child(1) {
+    margin-left : 0;
+  }
+  .right .rightContent .howToUseBtn {
     border : none;
     margin-top : 1em;
     padding : 0.1em;
@@ -266,19 +286,19 @@ export default {
     cursor : pointer;
     transition : .2s;
   }
-  .contWrap .howToUseBtn:hover {
+  .right .rightContent .howToUseBtn:hover {
     color : #111;
   }
   /* 등록된 파일 */
-  .afterAddedWrap {
+  .right .rightContent .afterAddedWrap {
     margin-top : 1em;
   }
-  .afterAddedWrap .addedFileList {
+  .right .rightContent .afterAddedWrap .addedFileList {
     padding-bottom : 0.5em;
     color : #333;
     font-weight : bold;
   }
-  .afterAddedWrap .addedfile {
+  .right .rightContent .afterAddedWrap .addedfile {
     margin : 0.3em 0.5em 0 0.5em;
     padding : 0.5em;
     background : #4876ef;
@@ -288,17 +308,17 @@ export default {
     justify-content : space-between;
     transition : .2s;
   }
-  .afterAddedWrap .addedfile:hover {
+  .right .rightContent .afterAddedWrap .addedfile:hover {
     background : #2353D2;
   }
-  .afterAddedWrap .addedfile .cancelFile {
+  .right .rightContent .afterAddedWrap .addedfile .cancelFile {
     cursor : pointer;
   }
   /* 옵션설정하기 */
-  .setOptionsBtn {
+  .right .rightContent .setOptionsBtn {
     margin-top : 1em;
   }
-  .setOptionsBtn span {
+  .right .rightContent .setOptionsBtn span {
     padding : 0.2em;
     background : none;
     font-size : 1em;
@@ -307,14 +327,14 @@ export default {
     cursor : pointer;
     transition : .2s;
   }
-  .setOptionsBtn span:hover {
+  .right .rightContent .setOptionsBtn span:hover {
     color : #111;
   }
   /* 완성된 gif */
-  .createdGifs {
+  .right .rightContent .createdGifs {
     margin-top : 1em;
   }
-  .createdGifs .gifCont {
+  .right .rightContent .createdGifs .gifCont {
     margin-top : 1em;
     display : flex;
     justify-content : space-between;
@@ -323,7 +343,7 @@ export default {
     border : 1px solid #eaeaea;
     border-radius : 0.3em;
   }
-  .createdGifs .gifCont a {
+  .right .rightContent .createdGifs .gifCont a {
     color : white;
     margin-right : 0.5em;
     padding : 0.3em;
@@ -331,14 +351,14 @@ export default {
     border-radius : 0.3em;
     font-size : 0.9em;
   }
-  .createdGifs .gifCont .gifImgWrap {
+  .right .rightContent .createdGifs .gifCont .gifImgWrap {
     width : 60%;
   }
-  .createdGifs .gifCont .gifImgWrap img {
+  .right .rightContent .createdGifs .gifCont .gifImgWrap img {
     display : block;
     width : 100%;
   }
-  .gifNotes {
+  .right .rightContent .gifNotes {
     padding : 0.5em 0 0 0.5em;
     color : tomato;
     font-size : 0.6em;

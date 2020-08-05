@@ -210,23 +210,21 @@ export default {
       if(impossible.length !== 0){
         this.$emit('callalert', impossible, 'fileOptionsError')
       }else{
+        let AjaxObj = null; // Ajax 통신 파일이면 form 아니면 {}
         const options = [...this.options];
-        let formData = new FormData(); // Ajax통신할 객체
         let url = null;
         switch(this.filetype){
           case 'AddFileComponent' : {
-            // url = 'https://twofastgif.com/convert/upload/';
             url = '/convert/upload/';
-            // url = 'http://ec2-13-209-17-21.ap-northeast-2.compute.amazonaws.com/convert/upload/';
+            AjaxObj = new FormData();
           }break;
           case 'AddUrlComponent' : {
-            // url = 'https://twofastgif.com/convert/urlupload/';
             url = '/convert/urlupload/';
-            // url = 'http://ec2-13-209-17-21.ap-northeast-2.compute.amazonaws.com/convert/urlupload/';
+            AjaxObj = {};
           }
         }
         
-        options.forEach((option, index) => { // 등록된 파일 갯수에 따른 객체 값 설정
+        options.forEach((option, index) => { // 등록된 파일 갯수에 따른 Ajax 통신 값 값 설정
           let stringIndex = null;
           const filteredIndex = index+1;
           const {file, fps, scale, start, end, palette} = option;
@@ -238,16 +236,29 @@ export default {
               stringIndex = 'second';
             }break;
           }
-          formData.append(`${stringIndex}_uploaded_file`,file);
-          formData.append(`fps_value_${filteredIndex}`,Number(fps.replace('fps', '')));
-          formData.append(`scaleValue_select_${filteredIndex}`,scale);
-          formData.append(`use_palette_${filteredIndex}`,palette);
-          formData.append(`start_${filteredIndex}`,this.returnSec(start, 'start'));
-          formData.append(`end_${filteredIndex}`,this.returnSec(end, 'end'));
-        });
 
+          switch(this.filetype){
+            case 'AddFileComponent' : {
+              AjaxObj.append(`${stringIndex}_uploaded_file`,file);
+              AjaxObj.append(`fps_value_${filteredIndex}`,Number(fps.replace('fps', '')));
+              AjaxObj.append(`scaleValue_select_${filteredIndex}`,scale);
+              AjaxObj.append(`use_palette_${filteredIndex}`,palette);
+              AjaxObj.append(`start_${filteredIndex}`,this.returnSec(start, 'start'));
+              AjaxObj.append(`end_${filteredIndex}`,this.returnSec(end, 'end'));
+            }break;
+            case 'AddUrlComponent' : {
+              AjaxObj[`uploadUrl_${filteredIndex}`] = file;
+              AjaxObj[`URL_fps_value_${filteredIndex}`] = Number(fps.replace('fps', ''));
+              AjaxObj[`URL_scaleValue_select_${filteredIndex}`] = scale;
+              AjaxObj[`use_palette_${filteredIndex}`] = palette;
+              AjaxObj[`URL_start_${filteredIndex}`] = this.returnSec(start, 'start');
+              AjaxObj[`URL_end_${filteredIndex}`] = this.returnSec(end, 'end');
+            }
+          }
+        });
+        
         this.$emit('gifing'); // 받아오는중
-        axios.post(url, formData)
+        axios.post(url, AjaxObj)
         .then(({data}) => {
           data['err_message'] ?
             this.$emit('callalert', data['err_message'], 'ajaxError')
@@ -258,21 +269,6 @@ export default {
           this.$emit('gifing');
           this.$emit('callalert', err, 'httpError');
         });
-
-        // fetch(url, {
-        //   method : 'POST',
-        //   body : formData
-        // })
-        // .then(res => {
-        //   return res.json();
-        // })
-        // .then(data => {
-        //   console.log(data)
-        //   this.$emit('setgiffiles', data); // 부모 data에 gif파일들 전달
-        // })
-        // .catch(err => {
-        //   console.log(err)
-        // });
       }
     },
     // 시작시간, 종료시간 유효성검사
