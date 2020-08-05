@@ -1,12 +1,12 @@
 <template>
   <div id="scrollPage">
-    스크롤된페이지
+
   </div>
 </template>
 
 <script>
 export default {
-  name: 'ScrollPage',
+  name: 'scrollPage',
   data(){
     return {
     }
@@ -17,5 +17,4 @@ export default {
 </script>
 
 <style>
-
 </style>

@@ -1,6 +1,8 @@
 
 <template>
-  <div id="app">
+  <div id="app"
+    :class="{overflowHidden : isPop===true}"
+  >
     <!-- 옵션 켰을 때, 검은 뒷배경 -->
     <div class="optionsBg" v-if="optionPopup" @click="optionPopup = false"></div>
     <!-- 스낵바 떴을 때, 검은 뒷배경 -->
@@ -16,14 +18,30 @@
         :alertobj="alertInform" 
          v-if="alertInform"
       >
-      </alert-component>
+    </alert-component>
+    </transition>
+    <!-- 옵션 설정 팝업 클릭 시, 노출되는 컴포넌트 -->
+    <!-- fileinfo = 등록된 최대 두개의 파일 전달 -->
+    <transition name="alert">
+      <OptionsComponent
+        class="optionPopup"
+        v-if="optionPopup"
+
+        :filetype="compNav"
+        :fileinfo="fileInfo"
+        @callalert="onAlert"
+        @setgiffiles="getGifFiles"
+        @gifing="gifIng=!gifIng"
+      >
+      </OptionsComponent>
     </transition>
     <div class="mainHeader">
       <div class="title">Two Fast Gif</div>
     </div>
     <div class="contWrap">
       <div class="left">
-        
+        <ScrollPage>
+        </ScrollPage>
       </div>
       <div class="right">
         <div class="tabBtnWrap">
@@ -70,21 +88,6 @@
                 옵션 설정하기
               </span>
             </div>
-            <!-- 옵션 설정 팝업 클릭 시, 노출되는 컴포넌트 -->
-            <!-- fileinfo = 등록된 최대 두개의 파일 전달 -->
-            <transition name="alert">
-              <OptionsComponent
-                class="optionPopup"
-                v-if="optionPopup"
-
-                :filetype="compNav"
-                :fileinfo="fileInfo"
-                @callalert="onAlert"
-                @setgiffiles="getGifFiles"
-                @gifing="gifIng=!gifIng"
-              >
-              </OptionsComponent>
-            </transition>
           </div>
           <!-- 완성된 gif파일들 있으면 노출 -->
           <div class="createdGifs" v-if="gifFiles.length!==0">
@@ -113,6 +116,7 @@ import AddUrlComponent from './components/addurl.vue';
 import AlertComponent from './components/alert.vue';
 import OptionsComponent from './components/setOptions.vue';
 import HowToUseComponent from './components/howtouse.vue';
+import ScrollPage from './components/scrollPage.vue';
 
 export default {
   name: 'App',
@@ -121,7 +125,18 @@ export default {
     AddUrlComponent, // url등록
     AlertComponent, // 스낵바
     OptionsComponent, // 옵션설정
-    HowToUseComponent // 사용설명
+    HowToUseComponent, // 사용설명
+    ScrollPage // 스크롤시 페이지
+  },
+  computed : {
+    isPop(){ // 하나의 팝업이라도 켜졌는지 확인
+      let isPop = false;
+      [this.alertInform, this.optionPopup, this.gifIng].forEach(res => {
+        if(res) isPop = true;
+        return
+      })
+      return isPop;
+    },
   },
   data(){
     return {
@@ -131,7 +146,8 @@ export default {
       optionPopup : false, // 옵션팝업
       showHowToUse : true,
       gifIng : false,
-      gifFiles : []
+      gifFiles : [],
+      deviceWidth : window.innerWidth
     }
   },
   methods : {
@@ -185,6 +201,11 @@ export default {
     min-height : 100vh;
     padding : 2em 0 2em;
   }
+  /* 팝업켜져서 검은 배경 생겼을 때 overflow hidden */
+  .overflowHidden {
+    height : 100vh;
+    overflow : hidden;
+  }
   /* 스낵바 관련 */
   .alertWrap {
     position : absolute;
@@ -204,7 +225,7 @@ export default {
     height: 100%;
     position: absolute;
     background : rgba(0,0,0,0.4);
-    z-index : 9;
+    z-index : 10;
     top : 0;
   }
   /* 스낵바 컴포넌트 애니메이션 */
@@ -212,20 +233,21 @@ export default {
     animation : alert .5s;
   }
   @keyframes alert {
-    0% {top : 18%; opacity : 0;}
-    100% {top : 20%; opacity : 1;}
+    0% {top : 28%; opacity : 0;}
+    100% {top : 30%; opacity : 1;}
   }    
   /* 옵션관련 */
   .optionsBg {
     width: 100%;
     height: 100%;
     position: absolute;
+    z-index : 7;
     background : rgba(0,0,0,0.4);
     top : 0;
   }
   /* 헤더 */
   .mainHeader {
-    width : 70%;
+    width : 80%;
     margin : 0 auto;
   }
   .mainHeader .title {
@@ -236,19 +258,24 @@ export default {
   }
   /* 그 외 컨텐츠 */
   .contWrap {
-    width : 70%;
+    width : 80%;
     margin : 0 auto;
-    display : flex;
+    position : relative;
+    /* display : flex; */
   }
   /* 컨텐츠 좌측 */
-  /* .left {
+  .left {
     width : 100%;
-    height : 500px;
+    min-height : 500px;
+    border-radius : 0.3em;
     background : white;
-  } */
+    position : absolute;
+    top : 2.4em;
+    transform : translate(-105%);
+  }
   /* 컨텐츠 우측 */
   .right {
-    width : 100%
+    width : 100%;
   }
   .right .tabBtnWrap {
     font-size : 1.1em;
@@ -385,7 +412,7 @@ export default {
     position: relative;
     width: 80px;
     height: 80px;
-    top : 30%;
+    top : 50%;
     left : 50%;
     transform : translate(-50%, -50%);
   }

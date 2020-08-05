@@ -68,7 +68,7 @@ export default {
     position: absolute;
     transform: translate(-50%);
     left: 50%;
-    top: 20%;
+    top: 30%;
     background : white;
     z-index : 10;
     padding : 1.5em;

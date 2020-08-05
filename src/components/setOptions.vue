@@ -250,9 +250,9 @@ export default {
               AjaxObj[`uploadUrl_${filteredIndex}`] = file;
               AjaxObj[`URL_fps_value_${filteredIndex}`] = Number(fps.replace('fps', ''));
               AjaxObj[`URL_scaleValue_select_${filteredIndex}`] = scale;
-              AjaxObj[`use_palette_${filteredIndex}`] = palette;
               AjaxObj[`URL_start_${filteredIndex}`] = this.returnSec(start, 'start');
               AjaxObj[`URL_end_${filteredIndex}`] = this.returnSec(end, 'end');
+              AjaxObj[`use_palette_${filteredIndex}`] = palette;
             }
           }
         });
@@ -328,11 +328,12 @@ export default {
 <style>
   #setOptionsComp {
     position : absolute;
+    z-index : 8;
     left : 50%;
-    top : 20%;
+    top : 30%;
     transform : translate(-50%, -20%);
     background : white;
-    width : 60%;
+    width : 80%;
     padding : 1em;
     border-radius : 0.3em;
   }
