@@ -38,7 +38,10 @@
     <div class="mainHeader">
       <div class="title">Two Fast Gif</div>
     </div>
-    <div class="contWrap">
+    <div class="contWrap"
+      @mousedown="touchStart"
+      @mousemove="touchMove"
+    >
       <div class="left">
         <ScrollPage>
         </ScrollPage>
@@ -144,10 +147,10 @@ export default {
       compNav : 'AddFileComponent', // 네비게이션바 클릭시 노출Comp 다르게
       alertInform : null, // 스낵바 정보보내는 객체
       optionPopup : false, // 옵션팝업
-      showHowToUse : true,
-      gifIng : false,
+      showHowToUse : true, // 간단사용설명서 보기
+      gifIng : false, // gif진행중인 이미지
       gifFiles : [],
-      deviceWidth : window.innerWidth
+      startPoint : null
     }
   },
   methods : {
@@ -177,6 +180,14 @@ export default {
       this.optionPopup = false; // 옵션팝업끄기
       this.fileInfo = []; // 등록한 파일 제거
       this.gifIng = false; // 변환중 끄기
+    },
+    touchStart(e){
+      this.touchStart
+      console.log(e.clientX)
+      
+    },
+    touchMove(e){
+      // console.log(e)
     }
   }
 }

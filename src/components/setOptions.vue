@@ -247,7 +247,7 @@ export default {
               AjaxObj.append(`end_${filteredIndex}`,this.returnSec(end, 'end'));
             }break;
             case 'AddUrlComponent' : {
-              AjaxObj[`uploadUrl_${filteredIndex}`] = file;
+              AjaxObj[`uploadURL_${filteredIndex}`] = file;
               AjaxObj[`URL_fps_value_${filteredIndex}`] = Number(fps.replace('fps', ''));
               AjaxObj[`URL_scaleValue_select_${filteredIndex}`] = scale;
               AjaxObj[`URL_start_${filteredIndex}`] = this.returnSec(start, 'start');
