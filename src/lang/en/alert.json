@@ -1,0 +1,8 @@
+{
+  "alert" : "Notification",
+  "overSize" : "The capacity of the above file exceeds the maximum allowed.",
+  "noValid" : "Unsupported file type.",
+  "overLength" : "You have exceeded the maximum number of possible progresses.",
+  "notUrlValid" : "Non-Url format, or unsupported extension.",
+  "timeError" : "The start time is greater than or equal to the end time."
+}

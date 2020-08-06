@@ -4,7 +4,7 @@
     :class="{overflowHidden : isPop || !isShownMain}"
   >
     <!-- 옵션 켰을 때, 검은 뒷배경 -->
-    <div class="optionsBg" v-if="optionPopup" @click="optionPopup = false"></div>
+    <div class="optionsBg" :style="{display}" v-if="optionPopup" @click="optionPopup = false"></div>
     <!-- 스낵바 떴을 때, 검은 뒷배경 -->
     <div class="alertBg" v-if="alertInform" @click="alertInform = null"></div>
     <!-- 진행중 -->
@@ -27,16 +27,25 @@
         class="optionPopup"
         v-if="optionPopup"
 
+        :style="{display}"
         :filetype="compNav"
         :fileinfo="fileInfo"
+        @offoptionpop="optionPopup=false"
         @callalert="onAlert"
         @setgiffiles="getGifFiles"
         @gifing="gifIng=!gifIng"
+        @hideoption="hideOption"
       >
       </OptionsComponent>
     </transition>
     <div class="mainHeader">
+      <div class="localeBtnWrap">
+        <button @click.prevent="changeLocale">
+          {{$i18n.locale === 'en' ? '한국어' : 'English'}}
+        </button>
+      </div>
       <div class="title">Two Fast Gif</div>
+      <div class="subtitle">{{$t('app.subtitle')}}</div>
     </div>
     <div class="contWrap"
       v-touch:start="touchStart"
@@ -53,8 +62,8 @@
       <div class="right">
         <div class="tabBtnWrap">
           <!-- compNav 말그대로 컴포넌트 변경 네비게이션 -->
-          <span class="tabBtn" :class="{target : compNav==='AddFileComponent'}" @click="navChange('AddFileComponent')">파일</span>
-          <span class="tabBtn" :class="{target : compNav==='AddUrlComponent'}" @click="navChange('AddUrlComponent')">url</span>
+          <span class="tabBtn" :class="{target : compNav==='AddFileComponent'}" @click="navChange('AddFileComponent')">{{$t('app.tab1')}}</span>
+          <span class="tabBtn" :class="{target : compNav==='AddUrlComponent'}" @click="navChange('AddUrlComponent')">URL</span>
         </div>
         <div class="rightContent">
           <!-- 위의 네비게이션 버튼을 통해 출력하는 컴포넌트 -->
@@ -73,7 +82,7 @@
             
             v-if="fileInfo.length!==0"
           >
-            <div class="addedFileList">등록된 파일</div>
+            <div class="addedFileList">{{$t('app.addedFile')}}</div>
             <ul>
               <li class="addedfile" v-for="(data, index) of fileInfo" :key = "index">
                 <span class="limitLength" v-if="typeof data === 'object'">
@@ -92,7 +101,7 @@
               @click="optionPopup = true"
             >
               <span>
-                옵션 설정하기
+                {{$t('app.setOption')}}
               </span>
             </div>
           </div>
@@ -102,13 +111,13 @@
               <div class="gifImgWrap">
                 <img :src="gif" :alt="gif">
               </div>
-              <a :href="gif" download>다운로드</a>
+              <a :href="gif" download>{{$t('app.downLoad')}}</a>
             </div>
             <div class="gifNotes">
-              * 추가진행시 이전에 변환한 gif는 사라집니다!
+              * {{$t('app.beforeAginAlert')}}!
             </div>
           </div>
-          <button class="howToUseBtn" @click="showHowToUse=!showHowToUse">설명서</button>
+          <button class="howToUseBtn" @click="showHowToUse=!showHowToUse">{{$t('app.miniHowToUse')}}</button>
           <HowToUseComponent v-show="showHowToUse">
           </HowToUseComponent>
         </div>
@@ -159,15 +168,26 @@ export default {
       isNowMoving : false, // 현재 터치이동값 유효로인해 스크롤로 움직이고있냐
       isShownMain : true, // 현재 메인이 보이냐 안보이냐
       position : 0, // contWrap 이동값
+      display : 'block' // 옵션 스타일
     }
   },
+  created(){
+    let locale = navigator.language || navigator.userLanguage;
+    locale = locale.substring(0, 2);
+    if (locale !== 'ko') locale = 'en' // 한국어가 아닌 경우 무조건 영어로 설정
+    this.$i18n.locale = locale;
+  },
   methods : {
+    changeLocale(){
+      if (this.$i18n.locale === 'en') this.$i18n.locale = 'ko'
+      else this.$i18n.locale = 'en'
+    },
     onAlert(value, type){ // 스낵바 전용 메소드(자식들도 emit으로 연결)
       this.alertInform = {type, value};
     },
     updateVideoInfo(value){ // 파일등록(자식들도 emit으로 연결)
       if(this.fileInfo.length >= 2){
-        this.onAlert('두개 이상 불가능합니다.', 'overLength');
+        this.onAlert(null, 'overLength');
         return;
       }
       this.fileInfo.push(value);
@@ -184,10 +204,19 @@ export default {
       Object.values(value).forEach(gif => { // data gif배열에 담음
         this.gifFiles.push(gif);
       })
+      this.optionPopup = false; // 옵션팝업 끄기
+      this.display = 'block'; // 옵션팝업, bg 스타일 초기화
       this.alertInform = null // 스낵바 끄기
-      this.optionPopup = false; // 옵션팝업끄기
       this.fileInfo = []; // 등록한 파일 제거
       this.gifIng = false; // 변환중 끄기
+    },
+    // 변환요청시 gifing만 보이고 옵션팝업은 사라지게해달라는 요청
+    // v-if 조건으로 생성되는 컴포넌트라 v-if로 끌 시, emit되는 이벤트들이 모두 사라져 이후 emit들은 진행되지 못함. 따라서 스타일로 숨기겠음
+    hideOption(){
+      this.display==='none' ?
+        this.display = 'block'
+      :
+        this.display = 'none'
     },
     // vue는 vue-touch라는 npm을통해 터치나 마우스이벤트를 한번에 사용 가능하다.
     touchStart(e){ // 스크롤시작
@@ -258,6 +287,7 @@ export default {
           case 'right' : {
             if(this.isShownMain===true) res();
             // 오른쪽거보여줘
+            // 자유롭게 움직이다가 reset했을 때 올바른 자리 찾아가도록 여기서 isShownMain값 설정
             this.isShownMain = true;
             this.position = 0;
           }break;
@@ -296,7 +326,8 @@ export default {
     html { font-size : 12px; }
   }
   * {
-    margin : 0; padding : 0; list-style : none; text-decoration : none; box-sizing : border-box; outline : none; user-select : none;
+    margin : 0; padding : 0; list-style : none; text-decoration : none; box-sizing : border-box; outline : none; user-select : none; 
+    /* -webkit-user-drag : none; */
   }
   ::selection {
     background-color: transparent;
@@ -306,7 +337,7 @@ export default {
   } */
   #app {
     overflow-x : hidden;
-    background : #4876ef;
+    background : #333;
     min-height : 100vh;
     padding : 2em 0 2em;
   }
@@ -359,9 +390,26 @@ export default {
     width : 80%;
     margin : 0 auto;
   }
+  .localeBtnWrap {
+    text-align : right;
+  }
+  .localeBtnWrap button {
+    border : 0;
+    padding : 0.3em;
+    font-weight : bold;
+    border-radius : 0.3em;
+    cursor : pointer;
+    color : #333;
+  }
   .mainHeader .title {
     font-size : 3em;
-    line-height : 3em;
+    margin-top : 1em;
+    font-weight : bold;
+    color : white;
+  }
+  .mainHeader .subtitle {
+    font-size : 1.5em;
+    margin-bottom : 1em;
     font-weight : bold;
     color : white;
   }
@@ -374,12 +422,20 @@ export default {
   /* 컨텐츠 좌측 */
   .left {
     width : 100%;
-    min-height : 500px;
+    height : calc(100vh - 20em - 0.01px);
     border-radius : 0.3em;
     background : white;
     position : absolute;
     top : 2.4em;
+    padding : 1em;
     transform : translate(-105%);
+    overflow-x : hidden;
+    overflow-y : scroll;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .left::-webkit-scrollbar {
+    display : none;
   }
   /* 컨텐츠 우측 */
   .right {
@@ -413,20 +469,21 @@ export default {
   .right .rightContent .howToUseBtn {
     border : none;
     margin-top : 1em;
-    padding : 0.1em;
-    background : none;
+    padding : 0.3em;
     font-size : 1em;
-    font-weight : bold;
-    color : #999;
+    color : white;
+    background : #333;
+    border-radius : 0.3em;
     cursor : pointer;
     transition : .2s;
   }
   .right .rightContent .howToUseBtn:hover {
-    color : #111;
+    background : #444;
   }
   /* 등록된 파일 */
   .right .rightContent .afterAddedWrap {
-    margin-top : 1em;
+    border-bottom : 1px solid #eaeaea;
+    padding : 1em 0;
   }
   .right .rightContent .afterAddedWrap .addedFileList {
     padding-bottom : 0.5em;
@@ -436,7 +493,7 @@ export default {
   .right .rightContent .afterAddedWrap .addedfile {
     margin : 0.3em 0.5em 0 0.5em;
     padding : 0.5em;
-    background : #4876ef;
+    background : #333;
     border-radius : 0.3em;
     color : white;
     display : flex;
@@ -444,26 +501,26 @@ export default {
     transition : .2s;
   }
   .right .rightContent .afterAddedWrap .addedfile:hover {
-    background : #2353D2;
+    background : #444;
   }
   .right .rightContent .afterAddedWrap .addedfile .cancelFile {
     cursor : pointer;
   }
   /* 옵션설정하기 */
   .right .rightContent .setOptionsBtn {
-    margin-top : 1em;
+    margin-top : 2.5em;
   }
   .right .rightContent .setOptionsBtn span {
-    padding : 0.2em;
-    background : none;
+    padding : 0.3em;
+    background : #333;
     font-size : 1em;
-    font-weight : bold;
-    color : #999;
+    color : white;
+    border-radius : 0.3em;
     cursor : pointer;
     transition : .2s;
   }
   .right .rightContent .setOptionsBtn span:hover {
-    color : #111;
+    background : #444;
   }
   /* 완성된 gif */
   .right .rightContent .createdGifs {
@@ -482,7 +539,7 @@ export default {
     color : white;
     margin-right : 0.5em;
     padding : 0.3em;
-    background : #4876ef;
+    background : #333;
     border-radius : 0.3em;
     font-size : 0.9em;
   }

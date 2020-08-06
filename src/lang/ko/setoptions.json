@@ -1,0 +1,17 @@
+{
+  "fileName" : "파일명",
+  "setFps" : "FPS설정",
+  "setScale" : "해상도설정",
+  "setScale1" : "변환할 동영상 해상도(기본)",
+  "setScaleW" : "가로",
+  "setScaleH" : "세로",
+  "setQual" : "화질설정",
+  "setQualText" : "고화질의 경우 gif의 퀄리티가 좋지만, 저화질에 비해 변환속도가 느립니다.",
+  "highQual" : "고화질",
+  "lowQual" : "저화질",
+  "setStartTime" : "움짤 시작시간 설정",
+  "setEndTime" : "움짤 종료시간 설정",
+  "min" : "분",
+  "sec" : "초",
+  "convert" : "변환하기"
+}

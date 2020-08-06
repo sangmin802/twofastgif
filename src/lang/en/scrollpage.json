@@ -1,0 +1,22 @@
+{
+  "title" : "User Description",
+  "step11" : "File registration",
+  "step11Text" : "You can register up to two.",
+  "step12" : "URL registration",
+  "step12Text1" : "You can register up to two.",
+  "step12Text2" : "Only URL with video type is allowed.",
+  "step12Text3" : "After pasting the URL, click Publish to register.",
+  "step2" : "Validation",
+  "step2Text1" : "If there are more than 2 files or URLs, they can be returned.",
+  "step2Text2" : "The size of each capacity of the file or URL is returned if it exceeds the allowed amount.",
+  "step2Text3" : "If it is not a convertible URL to GIF, it will be returned.",
+  "step3" : "Setting GIF Options",
+  "step3Text1" : "FPS is higher-than-natural GIFs are created.",
+  "step3Text2" : "Resolution settings let you create a GIF of any size.",
+  "step3Text3" : "The higher the quality, the cleaner, but it takes longer.",
+  "step3Text4" : "You can set the time up to 59 minutes 59 seconds 99 milliseconds.",
+  "step3Text5" : "If you enter nothing in the time setting, it is created from beginning to end.",
+  "step4" : "Complete GIF Transformation",
+  "step4Text1" : "Right, click the Download button to receive the generated GIF.",
+  "step4Text2" : "You can create more GIFs, but when you register new files or URLs and convert them, the previously created GIFs disappear."
+}

@@ -1,0 +1,9 @@
+{
+  "subtitle" : "GIF generator",
+  "tab1" : "File",
+  "addedFile" : "registered file",
+  "setOption" : "To set options",
+  "downLoad" : "Download",
+  "beforeAgainAlert" : "The gif that was converted before the further progress will disappear.",
+  "miniHowToUse" : "instruction"
+}

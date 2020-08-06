@@ -1,0 +1,8 @@
+{
+  "li1" : "You can convert up to 2 video files at the same time.",
+  "li2" : "Convertible file types are various video file types such as mp4, webm, flv, avi, etc.",
+  "li3" : "fps25 converts up to 12 seconds, fps15 up to 20 seconds, and fps10 up to 30 seconds.",
+  "li4" : "Maximum height is 1200px and maximum width is 600px.",
+  "li5" : "The higher the resolution or the higher the frame, the longer the transition may take.",
+  "li6" : "The start and end times can be set to the second decimal place."
+}

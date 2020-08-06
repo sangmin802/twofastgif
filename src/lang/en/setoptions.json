@@ -1,0 +1,17 @@
+{
+  "fileName" : "File name",
+  "setFps" : "FPS Settings",
+  "setScale" : "Resolution setting",
+  "setScale1" : "Video Resolution to Convert (Default)",
+  "setScaleW" : "width",
+  "setScaleH" : "height",
+  "setQual" : "Quality setting",
+  "setQualText" : "For high quality, gif quality is good, but conversion speed is slower than low quality.",
+  "highQual" : "High-definition",
+  "lowQual" : "Low-definition",
+  "setStartTime" : "Set GIF Start Time",
+  "setEndTime" : "Set GIF End Time",
+  "min" : "Min",
+  "sec" : "Sec",
+  "convert" : "To transform"
+}

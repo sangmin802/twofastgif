@@ -8,7 +8,7 @@
         <input type="text" v-model="url2" placeholder="URL 2">
       </p>
       <p>
-        <input type="submit" value="등록">
+        <input type="submit" :value="$t('addurl.insert')">
       </p>
     </form>
   </div>
@@ -98,11 +98,11 @@ export default {
     margin-top : 0.5em;
     border-radius : 0.3em;
     color : white;
-    background : #4876ef;
+    background : #333;
     cursor : pointer;
     transition : .2s;
   }
   #addurlComp p input[type="submit"]:hover {
-    background : #2353D2;
+    background : #444;
   }
 </style>

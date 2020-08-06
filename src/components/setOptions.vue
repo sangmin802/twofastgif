@@ -1,122 +1,130 @@
 <template>
   <div id="setOptionsComp">
-    <div class="optionsTabBtn">
-      <!-- 등록되는 파일의 갯수에 따라 네비게이션 생성 및, 해당 값으로 노출되는 세부옵션 탭 감지 -->
-      <span
+    <template v-if="files">
+      <div class="optionsTabBtn">
+        <!-- 등록되는 파일의 갯수에 따라 네비게이션 생성 및, 해당 값으로 노출되는 세부옵션 탭 감지 -->
+        <span
+          v-for="(file, index) of fileinfo"
+          :key="'optionTab'+(index+1)"
+          @click="optionTarget = index+1"
+          :class="{target : optionTarget === index+1}"
+        >Video{{index+1}}</span>
+      </div>
+      <div class="optionWrap"
         v-for="(file, index) of fileinfo"
-        :key="'optionTab'+(index+1)"
-        @click="optionTarget = index+1"
-        :class="{target : optionTarget === index+1}"
-      >Video{{index+1}}</span>
-    </div>
-    <div class="optionWrap"
-      v-for="(file, index) of fileinfo"
-      :key="'optionDetail'+(index+1)"
-    >
-    <!-- 네비게이션 클릭에 따라 맞는 뷰 생성 -->
-      <template
-        v-if="optionTarget === index+1"
+        :key="'optionDetail'+(index+1)"
       >
-        <div class="targetTitle">
-          <div class="optTitle">파일명</div>
-          <div class="optContent" v-if="typeof file === 'object'">
-            {{file.name}}
-          </div>
-          <div class="optContent" v-if="typeof file === 'string'">
-            {{file}}
-          </div>
-        </div>
-        <!-- 파일 갯수별 동적 클래스 -->
-        <!-- 동적 v-model -->
-        <form
-          :class="'optionForm'+(index+1)"
-          @submit.prevent="sendAjax"  
+      <!-- 네비게이션 클릭에 따라 맞는 뷰 생성 -->
+        <template
+          v-if="optionTarget === index+1"
         >
-          <div class="optDetailWrap" :class="'setFps'+(index+1)">
-            <div class="optTitle">
-              FPS설정
+          <div class="targetTitle">
+            <div class="optTitle">{{$t('setoptions.fileName')}}</div>
+            <div class="optContent" v-if="typeof file === 'object'">
+              {{file.name}}
             </div>
-            <div class="optContent">
-              <select v-model="options[index].fps">
-                <option>10fps</option>
-                <option selected>15fps</option>
-                <option>25fps</option>
-              </select>
+            <div class="optContent" v-if="typeof file === 'string'">
+              {{file}}
             </div>
           </div>
-          <div class="optDetailWrap" :class="'setScale'+(index+1)">
-            <div class="optTitle">
-              해상도설정
-            </div>
-            <div class="optContent">
-              <select v-model="options[index].scale">
-                <option>변환할 동영상 해상도(기본)</option>
-                <option>가로:600px</option>
-                <option>가로:480px</option>
-                <option>세로:480px</option>
-                <option>세로:300px</option>
-              </select>
-            </div>
-          </div>
-          <div class="optDetailWrap" :class="'setPalette'+(index+1)">
-            <div class="optTitle">
-              화질설정
-            </div>
-            <div class="optContent qualityWrap">
-              <div class="highQualityWrap">
-                <label for="highQuality">고화질</label>
-                <input type="radio" checked value="1" v-model="options[index].palette" id="highQuality">
+          <!-- 파일 갯수별 동적 클래스 -->
+          <!-- 동적 v-model -->
+          <form
+            :class="'optionForm'+(index+1)"
+            @submit.prevent="sendAjax"  
+          >
+            <div class="optDetailWrap" :class="'setFps'+(index+1)">
+              <div class="optTitle">
+                {{$t('setoptions.setFps')}}
               </div>
-              <div class="lowQualityWrap">
-                <label for="lowQuality">저화질</label>
-                <input type="radio" value="0" v-model="options[index].palette" id="lowQuality">
+              <div class="optContent">
+                <select v-model="options[index].fps">
+                  <option>10fps</option>
+                  <option selected>15fps</option>
+                  <option>25fps</option>
+                </select>
               </div>
             </div>
-          </div>
-          <div class="optDetailWrap" :class="'setStart'+(index+1)">
-            <div class="optTitle">
-              움짤 시작시간 설정
-            </div>
-            <div class="optContent timeOption">
-              <div class="min">
-                <input @keyup="keyPrevent" v-model="options[index].start.FM" type="number" :data-index="index" data-type="start" data-timevalue="FM" :min="0" :max="5">
-                <input @keyup="keyPrevent" v-model="options[index].start.SM" type="number" :data-index="index" data-type="start" data-timevalue="SM" :min="0" :max="9">
-                <span>분</span>
+            <div class="optDetailWrap" :class="'setScale'+(index+1)">
+              <div class="optTitle">
+                {{$t('setoptions.setScale')}}
               </div>
-              <div class="sec">
-                <input @keyup="keyPrevent" v-model="options[index].start.FS" type="number" :data-index="index" data-type="start" data-timevalue="FS" :min="0" :max="5">
-                <input @keyup="keyPrevent" v-model="options[index].start.SS" type="number" :data-index="index" data-type="start" data-timevalue="SS" :min="0" :max="9">
-                :
-                <input @keyup="keyPrevent" v-model="options[index].start.FMS" type="number" :data-index="index" data-type="start" data-timevalue="FMS" :min="0" :max="9">
-                <input @keyup="keyPrevent" v-model="options[index].start.SMS" type="number" :data-index="index" data-type="start" data-timevalue="SMS" :min="0" :max="9">
-                <span>초</span>
+              <div class="optContent">
+                <select v-model="options[index].scale">
+                  <option value="변환할 동영상 해상도(기본)">{{$t('setoptions.setScale1')}}</option>
+                  <option value="가로:600px">{{$t('setoptions.setScaleW')}}:600px</option>
+                  <option value="가로:480px">{{$t('setoptions.setScaleW')}}:480px</option>
+                  <option value="세로:480px">{{$t('setoptions.setScaleH')}}:480px</option>
+                  <option value="세로:300px">{{$t('setoptions.setScaleH')}}:300px</option>
+                </select>
               </div>
             </div>
-          </div>
-          <div class="optDetailWrap" :class="'setEnd'+(index+1)">
-            <div class="optTitle">
-              움짤 종료시간 설정
-            </div>
-            <div class="optContent timeOption">
-              <div class="min">
-                <input @keyup="keyPrevent" v-model="options[index].end.FM" type="number" :data-index="index" data-type="end" data-timevalue="FM" :min="0" :max="5">
-                <input @keyup="keyPrevent" v-model="options[index].end.SM" type="number" :data-index="index" data-type="end" data-timevalue="SM" :min="0" :max="9">
-                <span>분</span>
+            <div class="optDetailWrap" :class="'setPalette'+(index+1)">
+              <div class="optTitle qualityTitle">
+                {{$t('setoptions.setQual')}}
+                <div class="qualityQues">
+                  ?
+                  <div class="qualityQuesText">
+                    {{$t('setoptions.setQualText')}}
+                  </div>
+                </div>
               </div>
-              <div class="sec">
-                <input @keyup="keyPrevent" v-model="options[index].end.FS" type="number" :data-index="index" data-type="end" data-timevalue="FS" :min="0" :max="5">
-                <input @keyup="keyPrevent" v-model="options[index].end.SS" type="number" :data-index="index" data-type="end" data-timevalue="SS" :min="0" :max="9">
-                :
-                <input @keyup="keyPrevent" v-model="options[index].end.FMS" type="number" :data-index="index" data-type="end" data-timevalue="FMS" :min="0" :max="9">
-                <input @keyup="keyPrevent" v-model="options[index].end.SMS" type="number" :data-index="index" data-type="end" data-timevalue="SMS" :min="0" :max="9">
-                <span>초</span>
+              <div class="optContent qualityWrap">
+                <div class="highQualityWrap">
+                  <label for="highQuality">{{$t('setoptions.highQual')}}</label>
+                  <input type="radio" checked value="1" v-model="options[index].palette" id="highQuality">
+                </div>
+                <div class="lowQualityWrap">
+                  <label for="lowQuality">{{$t('setoptions.lowQual')}}</label>
+                  <input type="radio" value="0" v-model="options[index].palette" id="lowQuality">
+                </div>
               </div>
             </div>
-          </div>
-          <input type="submit" value="변환하기">
-        </form>
-      </template>
-    </div>
+            <div class="optDetailWrap" :class="'setStart'+(index+1)">
+              <div class="optTitle">
+                {{$t('setoptions.setStartTime')}}
+              </div>
+              <div class="optContent timeOption">
+                <div class="min">
+                  <input @keyup="keyPrevent" v-model="options[index].start.FM" type="number" :data-index="index" data-type="start" data-timevalue="FM" :min="0" :max="5">
+                  <input @keyup="keyPrevent" v-model="options[index].start.SM" type="number" :data-index="index" data-type="start" data-timevalue="SM" :min="0" :max="9">
+                  <span>{{$t('setoptions.min')}}</span>
+                </div>
+                <div class="sec">
+                  <input @keyup="keyPrevent" v-model="options[index].start.FS" type="number" :data-index="index" data-type="start" data-timevalue="FS" :min="0" :max="5">
+                  <input @keyup="keyPrevent" v-model="options[index].start.SS" type="number" :data-index="index" data-type="start" data-timevalue="SS" :min="0" :max="9">
+                  :
+                  <input @keyup="keyPrevent" v-model="options[index].start.FMS" type="number" :data-index="index" data-type="start" data-timevalue="FMS" :min="0" :max="9">
+                  <input @keyup="keyPrevent" v-model="options[index].start.SMS" type="number" :data-index="index" data-type="start" data-timevalue="SMS" :min="0" :max="9">
+                  <span>{{$t('setoptions.sec')}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="optDetailWrap" :class="'setEnd'+(index+1)">
+              <div class="optTitle">
+                {{$t('setoptions.setEndTime')}}
+              </div>
+              <div class="optContent timeOption">
+                <div class="min">
+                  <input @keyup="keyPrevent" v-model="options[index].end.FM" type="number" :data-index="index" data-type="end" data-timevalue="FM" :min="0" :max="5">
+                  <input @keyup="keyPrevent" v-model="options[index].end.SM" type="number" :data-index="index" data-type="end" data-timevalue="SM" :min="0" :max="9">
+                  <span>{{$t('setoptions.min')}}</span>
+                </div>
+                <div class="sec">
+                  <input @keyup="keyPrevent" v-model="options[index].end.FS" type="number" :data-index="index" data-type="end" data-timevalue="FS" :min="0" :max="5">
+                  <input @keyup="keyPrevent" v-model="options[index].end.SS" type="number" :data-index="index" data-type="end" data-timevalue="SS" :min="0" :max="9">
+                  :
+                  <input @keyup="keyPrevent" v-model="options[index].end.FMS" type="number" :data-index="index" data-type="end" data-timevalue="FMS" :min="0" :max="9">
+                  <input @keyup="keyPrevent" v-model="options[index].end.SMS" type="number" :data-index="index" data-type="end" data-timevalue="SMS" :min="0" :max="9">
+                  <span>{{$t('setoptions.sec')}}</span>
+                </div>
+              </div>
+            </div>
+            <input type="submit" :value="$t('setoptions.convert')">
+          </form>
+        </template>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -258,6 +266,7 @@ export default {
         });
         
         this.$emit('gifing'); // 받아오는중
+        this.$emit('hideoption'); // 옵션팝업, bg 일시적으로 숨기기
         axios.post(url, AjaxObj)
         .then(({data}) => {
           data['err_message'] ?
@@ -267,6 +276,7 @@ export default {
         })
         .catch(err => {
           this.$emit('gifing');
+          this.$emit('hideoption'); // 옵션팝업, bg 다시생성
           this.$emit('callalert', err, 'httpError');
         });
       }
@@ -337,7 +347,7 @@ export default {
     padding : 1em;
     border-radius : 0.3em;
   }
-  .targetTitle .content {
+  .targetTitle .optContent {
     width : 100%;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -387,6 +397,39 @@ export default {
   .qualityWrap .lowQualityWrap {
     margin-left : 0.8em;
   }
+  .qualityTitle {
+    display : flex;
+    align-items : center;
+  }
+  .qualityTitle .qualityQues {
+    margin-left : 0.8em;
+    background : #333;
+    padding : 0em 0.4em;
+    border-radius : 50%;
+    color : white;
+    font-weight : bold;
+    cursor : pointer;
+    position : relative;
+  }
+  .qualityTitle .qualityQuesText {
+    position : absolute;
+    bottom : 100%;
+    left : 100%;
+    width : 800%;
+    font-size : 0.8em;
+    padding : 0.6em;
+    color : white;
+    background : #333;
+    border-radius : 0.3em;
+    display : none;
+    font-weight : 300;
+  }
+  .qualityTitle .qualityQues:hover {
+    background : #444;
+  }
+  .qualityTitle .qualityQues:hover .qualityQuesText {
+    display : block;
+  }
   .optionWrap .timeOption * {
     display : flex;
     border : 0;
@@ -403,6 +446,12 @@ export default {
     text-align : center;
     width : 30%;
   }
+  /* .optionWrap .timeOption .min input[type=number]:hover::-webkit-inner-spin-button {
+    right : 0;
+    top : 0;
+    width : 30%;
+    height : 15px;
+  } */
   .optionWrap .timeOption .sec {
     width : 50%;
   }
@@ -419,13 +468,13 @@ export default {
     margin-top : 0.8em;
     padding : 0.3em;
     border : 0;
-    background : #4876ef;
+    background : #333;
     color : white;
     border-radius : 0.3em;
     transition : .2s;
     cursor : pointer;
   }
   .optionWrap input[type=submit]:hover {
-    background : #2353D2;
+    background : #444;
   }
 </style>

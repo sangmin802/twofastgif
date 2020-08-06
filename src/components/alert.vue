@@ -1,6 +1,6 @@
 <template>
   <div id="alertComp">
-    <div class="title">알림</div>
+    <div class="title">{{$t('alert.alert')}}</div>
     <div v-if="type==='unValidFile'">
       <div v-if="value[0].length!==0">
         <ul>
@@ -8,7 +8,7 @@
             {{index+1}}. {{name}}
           </li>
         </ul>
-        <div>위 파일의 용량이 최대 허용량 초과입니다.</div>
+        <div>{{$t('alert.overSize')}}</div>
       </div>
       <div v-if="value[1].length!==0">
         <ul>
@@ -16,7 +16,7 @@
             {{index+1}}. {{name}}
           </li>
         </ul>
-        <div>지원하지 않는 파일 형식입니다.</div>
+        <div>{{$t('alert.noValid')}}</div>
       </div>
     </div>
     <div v-if="type==='httpError'">
@@ -26,7 +26,7 @@
       {{value}}
     </div>
     <div v-if="type==='overLength'" class="overLength">
-      {{value}}
+      {{$t('alert.overLength')}}
     </div>
     <div v-if="type==='unVerifyUrls'">
       <ul>
@@ -34,7 +34,7 @@
           {{index+1}}. {{name}}
         </li>
       </ul>
-      <div>Url형식이 아니거나, 지원하지 않는 확장자입니다.</div>
+      <div>{{$t('alert.notUrlValid')}}</div>
     </div>
     <div v-if="type==='fileOptionsError'">
       <ul>
@@ -42,7 +42,7 @@
           {{index+1}}. {{name}}
         </li>
       </ul>
-      <div>시작시간이 종료시간보다 크거나 같습니다.</div>
+      <div>{{$t('alert.timeError')}}</div>
     </div>
   </div>
 </template>

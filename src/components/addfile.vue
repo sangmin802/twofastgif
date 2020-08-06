@@ -6,8 +6,10 @@
       <label for="addFile" class="fileLabel"
         v-multidefault="{evt : ['dragenter', 'dragover', 'dragleave', 'drop']}"
         v-alldrop="{evt : ['dragleave', 'drop']}"
+
+        :style="dragTarget"
       >
-        Upload File
+        File registration
       </label>
       <input @change="clickAddFile" type="file" id="addFile">
     </form>
@@ -30,6 +32,10 @@ export default {
         'video/x-matroska',
         'video/mpeg'
       ],
+      dragTarget : {
+        borderStyle : 'solid',
+        color : '#999'
+      }
     }
   },
   methods : {
@@ -65,9 +71,11 @@ export default {
   },
   directives : { // 사용자 설정 디렉티브
     multidefault : { // 다수의 이벤트 디폴트
-      bind(el, {value : {evt}}){
+      bind(el, {value : {evt}}, vnode){
         evt.forEach(res => {
           el.addEventListener(res, (e) => {
+            vnode.context.dragTarget = {borderStyle : 'solid', color : '#999'};
+            if(e.type==='dragover') vnode.context.dragTarget = {borderStyle : 'dashed', color : '#333'};
             e.preventDefault();
             e.stopPropagation();
           });
@@ -96,16 +104,14 @@ export default {
   .fileLabel {
     display : block;
     height : 100px;
-    background : #eaeaea;
+    background : white;
     text-align : center;
     line-height : 100px;
-    border : 2px solid #666666;
+    border : 2px #666666;
     cursor : pointer;
+    color : #eaeaea;
   }
   #addFile {
     display : none;
-  }
-  .dragTarget {
-    border : 2px dashed #666666;
   }
 </style>
