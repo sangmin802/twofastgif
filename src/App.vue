@@ -2,13 +2,29 @@
 <template>
   <div id="app"
     :class="{overflowHidden : isPop || !isShownMain}"
+    v-touch:start="touchStart"
+    v-touch:end="touchEventReset"
+    v-touch:moving="touchMove"
+    @mouseleave="touchEventReset"
   >
     <!-- 옵션 켰을 때, 검은 뒷배경 -->
-    <div class="optionsBg" :style="{display}" v-if="optionPopup" @click="optionPopup = false"></div>
+    <div class="optionsBg"
+      :style="{display}" 
+      v-if="optionPopup" 
+      @click="optionPopup = false"
+      v-touchstop
+    ></div>
     <!-- 스낵바 떴을 때, 검은 뒷배경 -->
-    <div class="alertBg" v-if="alertInform" @click="alertInform = null"></div>
+    <div class="alertBg"
+      v-if="alertInform" 
+      @click="alertInform = null"
+      v-touchstop
+    ></div>
     <!-- 진행중 -->
-    <div class="gifIng" v-if="gifIng===true">
+    <div class="gifIng" 
+      v-if="gifIng===true"
+      v-touchstop
+    >
       <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
     </div>
     <!-- 스낵바 컴포넌트 -->
@@ -17,6 +33,7 @@
       <alert-component
         :alertobj="alertInform" 
          v-if="alertInform"
+         v-touchstop
       >
     </alert-component>
     </transition>
@@ -35,10 +52,13 @@
         @setgiffiles="getGifFiles"
         @gifing="gifIng=!gifIng"
         @hideoption="hideOption"
+        v-touchstop
       >
       </OptionsComponent>
     </transition>
-    <div class="mainHeader">
+    <div class="mainHeader"
+      v-touchstop
+    >
       <div class="localeBtnWrap">
         <button @click.prevent="changeLocale">
           {{$i18n.locale === 'en' ? '한국어' : 'English'}}
@@ -48,10 +68,6 @@
       <div class="subtitle">{{$t('app.subtitle')}}</div>
     </div>
     <div class="contWrap"
-      v-touch:start="touchStart"
-      v-touch:end="touchEventReset"
-      v-touch:moving="touchMove"
-      @mouseleave="touchEventReset"
       :style="{transform : `translate(${position}%)`}"
       :class="{transition : isNowMoving}"
     >
@@ -75,6 +91,7 @@
 
             @callalert="onAlert"
             @updatevideo="updateVideoInfo"
+            v-touchstop
           ></component>
           <!-- 등록된 파일이 있을 때만 노출되는 옵션설정 돔 -->
           <div 
@@ -114,7 +131,7 @@
               <a :href="gif" download>{{$t('app.downLoad')}}</a>
             </div>
             <div class="gifNotes">
-              * {{$t('app.beforeAginAlert')}}!
+              * {{$t('app.beforeAgainAlert')}}!
             </div>
           </div>
           <button class="howToUseBtn" @click="showHowToUse=!showHowToUse">{{$t('app.miniHowToUse')}}</button>
@@ -313,11 +330,25 @@ export default {
       this.isNowMoving = false;
       this.startPoint = null;      
     }
+  },
+  directives : {
+    touchstop : { // 슬라이딩 이벤트 대부분 app에게서 이벤트전달받지않도록
+      bind(el){
+        const evt = ['touchstart', 'mousedown']
+        evt.forEach(res => {
+          el.addEventListener(res, (e) => {
+            e.stopPropagation();
+          })
+        })
+      }
+    }
   }
 }
 </script>
 
 <style>
+  /* 눈누 상업적이용가능 무료폰트 감사합니다. */
+  @font-face { font-family: 'paybooc-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/paybooc-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
   html { font-size : 16px;}
   @media all and (min-width:768px) and (max-width:1024px) {
     html { font-size : 14px;}
@@ -326,7 +357,7 @@ export default {
     html { font-size : 12px; }
   }
   * {
-    margin : 0; padding : 0; list-style : none; text-decoration : none; box-sizing : border-box; outline : none; user-select : none; 
+    margin : 0; padding : 0; list-style : none; text-decoration : none; box-sizing : border-box; outline : none; user-select : none; font-family : 'paybooc-Bold';
     /* -webkit-user-drag : none; */
   }
   ::selection {
@@ -418,6 +449,29 @@ export default {
     width : 80%;
     margin : 0 auto;
     position : relative;
+  }
+  .contWrap::before {
+    content : '';
+    position : absolute;
+    z-index : 1;
+    width : 2em;
+    height : 2em;
+    background : url('https://fileconvertstorage.s3.ap-northeast-2.amazonaws.com/static/images/arrow.png');
+    background-size : cover;
+    right : 100%;
+    top : 4em;
+    transform : translate(0%);
+    animation: arrow;
+    animation-iteration-count: infinite;
+    animation-duration: 2s;
+  }
+  @keyframes arrow {
+    0% {transform : translate(0);}
+    5% {transform : translate(20%);}
+    10% {transform : translate(0);}
+    15% {transform : translate(20%);}
+    20% {transform : translate(0%)}
+    100% {transform : translate(0%);}
   }
   /* 컨텐츠 좌측 */
   .left {

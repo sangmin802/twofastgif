@@ -9,7 +9,7 @@
 
         :style="dragTarget"
       >
-        File registration
+        {{$t('addfile.addFile')}}
       </label>
       <input @change="clickAddFile" type="file" id="addFile">
     </form>
@@ -110,6 +110,9 @@ export default {
     border : 2px #666666;
     cursor : pointer;
     color : #eaeaea;
+  }
+  .fileLabel:hover {
+    color : #666 !important;
   }
   #addFile {
     display : none;

@@ -404,8 +404,9 @@ export default {
   .qualityTitle .qualityQues {
     margin-left : 0.8em;
     background : #333;
-    padding : 0em 0.4em;
+    padding : 0.3em 0.6em;
     border-radius : 50%;
+    font-size : 0.6em;
     color : white;
     font-weight : bold;
     cursor : pointer;
