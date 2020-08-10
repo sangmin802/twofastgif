@@ -22,4 +22,5 @@ module.exports = {
       config.plugins.push(...productionPlugins);
     }
   },
+  filenameHashing : false
 };

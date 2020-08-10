@@ -4,5 +4,6 @@
   "noValid" : "Unsupported file type.",
   "overLength" : "You have exceeded the maximum number of possible progresses.",
   "notUrlValid" : "Non-Url format, or unsupported extension.",
-  "timeError" : "The start time is greater than or equal to the end time."
+  "timeError" : "The start time is greater than or equal to the end time.",
+  "overTotalLength" : "The set time is greater than the total time of the file."
 }

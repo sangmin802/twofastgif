@@ -274,7 +274,10 @@ export default {
         .catch(err => {
           const {response : {status, data}} = err;
           if(status===400){
-            this.$emit('callalert', data['err_message'], 'ajaxError');
+            data['err_message']==='overTotalLength' ?
+              this.$emit('callalert', null, 'overTotalLength')
+            :
+              this.$emit('callalert', data['err_message'], 'ajaxError')
           }else{
             this.$emit('callalert', err, 'httpError');
           }

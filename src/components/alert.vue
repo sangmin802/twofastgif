@@ -22,6 +22,9 @@
     <div v-if="type==='httpError'">
       {{value}}
     </div>
+    <div v-if="type==='overTotalLength'">
+      {{$t('alert.overTotalLength')}}
+    </div>
     <div v-if="type==='ajaxError'">
       {{value}}
     </div>
