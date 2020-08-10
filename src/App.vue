@@ -370,7 +370,7 @@ export default {
   } */
   #app {
     overflow-x : hidden;
-    background : #333;
+    background : #666;
     min-height : 100vh;
     padding : 2em 0 2em;
   }

@@ -269,15 +269,17 @@ export default {
         this.$emit('hideoption'); // 옵션팝업, bg 일시적으로 숨기기
         axios.post(url, AjaxObj)
         .then(({data}) => {
-          data['err_message'] ?
-            this.$emit('callalert', data['err_message'], 'ajaxError')
-          :
-            this.$emit('setgiffiles', data); // 부모 data에 gif파일들 전달
+          this.$emit('setgiffiles', data); // 부모 data에 gif파일들 전달
         })
         .catch(err => {
+          const {response : {status}} = err;
+          if(status===400){
+            this.$emit('callalert', data['err_message'], 'ajaxError');
+          }else{
+            this.$emit('callalert', err, 'httpError');
+          }
           this.$emit('gifing');
           this.$emit('hideoption'); // 옵션팝업, bg 다시생성
-          this.$emit('callalert', err, 'httpError');
         });
       }
     },
