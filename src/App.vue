@@ -191,7 +191,9 @@ export default {
   created(){
     let locale = navigator.language || navigator.userLanguage;
     locale = locale.substring(0, 2);
-    if (locale !== 'ko') locale = 'en' // 한국어가 아닌 경우 무조건 영어로 설정
+    // 한국어가 아닌 경우 무조건 한국어로
+    // 빌드할 때에는 이유를 모르겠지만 locale이 en으로 바뀜. 따라서 빌드를 한국어로 원하면 무조건 ko로 되도록해야함
+    if (locale !== 'ko') locale = 'en';
     this.$i18n.locale = locale;
   },
   methods : {
