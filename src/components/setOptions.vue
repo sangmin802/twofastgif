@@ -272,7 +272,7 @@ export default {
           this.$emit('setgiffiles', data); // 부모 data에 gif파일들 전달
         })
         .catch(err => {
-          const {response : {status}} = err;
+          const {response : {status, data}} = err;
           if(status===400){
             this.$emit('callalert', data['err_message'], 'ajaxError');
           }else{
