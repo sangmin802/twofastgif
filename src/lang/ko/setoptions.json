@@ -1,5 +1,7 @@
 {
   "fileName" : "파일명",
+  "showVideo" : "동영상 원본",
+  "inValidVideoType" : "동영상 미리보기 기능에 호환되지 않는 영상 타입 입니다.",
   "setFps" : "FPS설정",
   "setScale" : "해상도설정",
   "setScale1" : "변환할 동영상 해상도(기본)",

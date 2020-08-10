@@ -1,5 +1,7 @@
 {
   "fileName" : "File name",
+  "showVideo" : "Original video",
+  "inValidVideoType" : "This video type is not compatible with the video preview function.",
   "setFps" : "FPS Settings",
   "setScale" : "Resolution setting",
   "setScale1" : "Video Resolution to Convert (Default)",

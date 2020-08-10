@@ -20,11 +20,26 @@
         >
           <div class="targetTitle">
             <div class="optTitle">{{$t('setoptions.fileName')}}</div>
-            <div class="optContent" v-if="typeof file === 'object'">
-              {{file.name}}
+            <div class="optContent">
+              {{file.name || file}}
             </div>
-            <div class="optContent" v-if="typeof file === 'string'">
-              {{file}}
+          </div>
+          <div class="targetVideo">
+            <div class="optTitle">{{$t('setoptions.showVideo')}}</div>
+            <!-- 등록한 영상의 미리보기인데, 비디오태그의 canplay 메소드를 확인하여 해당 태그에 호환가능한 영상타입인지 확인하고 가능한것만 영상으로 아니면 안된다고 텍스트 -->
+            <div v-show="options[index].checkVideoValid">
+              <video 
+                controls
+                :src="videoSrc(file)"
+                @canplay="options[index].checkVideoValid=true"
+              >
+                {{file.name || file}}
+              </video>
+            </div>
+            <div v-show="!options[index].checkVideoValid">
+              <div class="optContent">
+                {{$t('setoptions.inValidVideoType')}}
+              </div>
             </div>
           </div>
           <!-- 파일 갯수별 동적 클래스 -->
@@ -141,6 +156,7 @@ export default {
     [...this.fileinfo].forEach((file, index) => {
       options[index] = {
         file,
+        checkVideoValid : null,
         scale : '변환할 동영상 해상도(기본)',
         fps : '15fps',
         palette : 1,
@@ -175,6 +191,17 @@ export default {
     }
   },
   methods : {
+    videoSrc(file){ // 파일이든 url이든 해당 영상의 src를 만들어줌
+      let videoSrc = null;
+      switch(typeof file){
+        case 'object' : videoSrc = URL.createObjectURL(file);
+        break;
+        case 'string' : videoSrc = file;
+        break;
+        default : return null;
+      }
+      return videoSrc;
+    },
     sendAjax(){
       const impossible = [];
       const possible = [];
@@ -347,16 +374,32 @@ export default {
     left : 50%;
     top : 30%;
     transform : translate(-50%, -20%);
-    background : white;
+    background : white; 
     width : 80%;
+    min-height : fit-content;
+    max-height: calc(100vh - 10em - 0.01px);
+    overflow-y : scroll;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
     padding : 1em;
     border-radius : 0.3em;
+  }
+  #setOptionsComp::-webkit-scrollbar {
+    display : none;
+  }
+  .targetTitle, .targetVideo {
+    padding : 0.7em 0;
+    margin : 0.7em 0;
+    border-bottom : 1px solid #eaeaea;
   }
   .targetTitle .optContent {
     width : 100%;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+  }
+  .targetVideo video {
+    width : 100%;
   }
   .optionsTabBtn span {
     margin-right : 1em;
@@ -383,9 +426,6 @@ export default {
     margin-bottom : 0.5em;
     padding-bottom : 0.5em;
     border-bottom : 1px solid #eaeaea;
-  }
-  .optionWrap .targetTitle {
-    margin : 0.7em 0;
   }
   /* input 설정 */
   .optionWrap select {

@@ -90,6 +90,7 @@ export default {
     border-bottom : 1px solid #eaeaea;
     padding : 0.3em;
     font-size : 0.9em;
+    user-select : inherit !important;
   }
   #addurlComp p input[type="submit"] {
     font-size : 0.9em;

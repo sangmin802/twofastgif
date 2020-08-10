@@ -360,14 +360,7 @@ export default {
   }
   * {
     margin : 0; padding : 0; list-style : none; text-decoration : none; box-sizing : border-box; outline : none; user-select : none; font-family : 'paybooc-Bold';
-    /* -webkit-user-drag : none; */
   }
-  ::selection {
-    background-color: transparent;
-  }
-  /* body { 
-    overflow-y : scroll;
-  } */
   #app {
     overflow-x : hidden;
     background : #666;
@@ -477,8 +470,8 @@ export default {
   }
   /* 컨텐츠 좌측 */
   .left {
-    width : 100%;
     height : calc(100vh - 20em - 0.01px);
+    width : 100%;
     border-radius : 0.3em;
     background : white;
     position : absolute;
@@ -510,8 +503,17 @@ export default {
   }
   .rightContent {
     padding : 2em;
+    min-height : fit-content;
+    max-height : calc(100vh - 20em - 0.01px);
+    overflow-x : hidden;
+    overflow-y : scroll;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
     background : white;
     border-radius : 0 0.3em 0.3em 0.3em;
+  }
+  .rightContent::-webkit-scrollbar {
+    display : none;
   }
   .right .tabBtn:first-child {
     border-radius : 0.3em 0 0 0;
