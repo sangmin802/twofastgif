@@ -24,13 +24,13 @@
               {{file.name || file}}
             </div>
           </div>
+          <!-- 등록한 영상의 미리보기인데, 비디오태그의 canplay 메소드를 확인하여 해당 태그에 호환가능한 영상타입인지 확인하고 가능한것만 영상으로 아니면 안된다고 텍스트 -->
           <div class="targetVideo">
             <div class="optTitle">{{$t('setoptions.showVideo')}}</div>
-            <!-- 등록한 영상의 미리보기인데, 비디오태그의 canplay 메소드를 확인하여 해당 태그에 호환가능한 영상타입인지 확인하고 가능한것만 영상으로 아니면 안된다고 텍스트 -->
             <div v-show="options[index].checkVideoValid">
               <video 
                 controls
-                :src="videoSrc(file)"
+                :src="options[index].videoSrc"
                 @canplay="options[index].checkVideoValid=true"
               >
                 {{file.name || file}}
@@ -154,9 +154,18 @@ export default {
     const options = [];
     // 부모에게 받아오는 파일의 갯수애 따라 data값 생성
     [...this.fileinfo].forEach((file, index) => {
+      let videoSrc = null;
+      switch(typeof file){
+        case 'object' : videoSrc = URL.createObjectURL(file);
+        break;
+        case 'string' : videoSrc = file;
+        break;
+        default : return null;
+      }
       options[index] = {
         file,
         checkVideoValid : null,
+        videoSrc,
         scale : '변환할 동영상 해상도(기본)',
         fps : '15fps',
         palette : 1,
@@ -191,17 +200,17 @@ export default {
     }
   },
   methods : {
-    videoSrc(file){ // 파일이든 url이든 해당 영상의 src를 만들어줌
-      let videoSrc = null;
-      switch(typeof file){
-        case 'object' : videoSrc = URL.createObjectURL(file);
-        break;
-        case 'string' : videoSrc = file;
-        break;
-        default : return null;
-      }
-      return videoSrc;
-    },
+    // videoSrc(file){ // 파일이든 url이든 해당 영상의 src를 만들어줌
+    //   let videoSrc = null;
+    //   switch(typeof file){
+    //     case 'object' : videoSrc = URL.createObjectURL(file);
+    //     break;
+    //     case 'string' : videoSrc = file;
+    //     break;
+    //     default : return null;
+    //   }
+    //   return videoSrc;
+    // },
     sendAjax(){
       const impossible = [];
       const possible = [];
@@ -398,8 +407,12 @@ export default {
     overflow: hidden;
     white-space: nowrap;
   }
+  .targetVideo {
+    text-align : center;
+  }
   .targetVideo video {
-    width : 100%;
+    min-width : 50%;
+    max-width : 100%;
   }
   .optionsTabBtn span {
     margin-right : 1em;
