@@ -24,13 +24,13 @@ export default {
       url2 : null, // url2
       fileEndTypes: [ // 지원하는 확장자
         'avi',
-        'flv',
-        'wmv',
+        // 'flv',
+        // 'wmv',
         'mov',
         'mp4',
         'webm',
         'mkv',
-        'mpeg',
+        // 'mpeg',
       ],
     }
   },

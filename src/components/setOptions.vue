@@ -29,6 +29,9 @@
             <div class="optTitle">{{$t('setoptions.showVideo')}}</div>
             <div v-show="options[index].checkVideoValid">
               <video 
+                autoplay
+                muted
+                playsinline
                 controls
                 :src="options[index].videoSrc"
                 @canplay="options[index].checkVideoValid=true"
@@ -200,17 +203,6 @@ export default {
     }
   },
   methods : {
-    // videoSrc(file){ // 파일이든 url이든 해당 영상의 src를 만들어줌
-    //   let videoSrc = null;
-    //   switch(typeof file){
-    //     case 'object' : videoSrc = URL.createObjectURL(file);
-    //     break;
-    //     case 'string' : videoSrc = file;
-    //     break;
-    //     default : return null;
-    //   }
-    //   return videoSrc;
-    // },
     sendAjax(){
       const impossible = [];
       const possible = [];
@@ -259,7 +251,8 @@ export default {
         let url = null;
         switch(this.filetype){
           case 'AddFileComponent' : {
-            url = '/convert/upload/';
+            url = 'http://ec2-13-125-133-147.ap-northeast-2.compute.amazonaws.com/';
+            // url = '/convert/upload/';
             AjaxObj = new FormData();
           }break;
           case 'AddUrlComponent' : {
@@ -308,14 +301,17 @@ export default {
           this.$emit('setgiffiles', data); // 부모 data에 gif파일들 전달
         })
         .catch(err => {
-          const {response : {status, data}} = err;
-          if(status===400){
-            data['err_message']==='overTotalLength' ?
-              this.$emit('callalert', null, 'overTotalLength')
-            :
-              this.$emit('callalert', data['err_message'], 'ajaxError')
-          }else{
+          const {response} = err;
+          if(!response){
             this.$emit('callalert', err, 'httpError');
+          }else{
+            const {status} = response;
+            if(status===400){
+              data['err_message']==='overTotalLength' ?
+                this.$emit('callalert', null, 'overTotalLength')
+              :
+                this.$emit('callalert', data['err_message'], 'ajaxError')
+            }
           }
           this.$emit('gifing');
           this.$emit('hideoption'); // 옵션팝업, bg 다시생성
