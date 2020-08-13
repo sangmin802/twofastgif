@@ -491,6 +491,7 @@ export default {
     width : 100%;
   }
   .right .tabBtnWrap {
+    margin-bottom : -1px;
     font-size : 1.1em;
   }
   .right .tabBtn {
