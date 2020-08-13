@@ -251,8 +251,7 @@ export default {
         let url = null;
         switch(this.filetype){
           case 'AddFileComponent' : {
-            url = 'http://ec2-13-125-133-147.ap-northeast-2.compute.amazonaws.com/';
-            // url = '/convert/upload/';
+            url = '/convert/upload/';
             AjaxObj = new FormData();
           }break;
           case 'AddUrlComponent' : {
@@ -311,6 +310,8 @@ export default {
                 this.$emit('callalert', null, 'overTotalLength')
               :
                 this.$emit('callalert', data['err_message'], 'ajaxError')
+            }else{
+              this.$emit('callalert', err, 'httpError');
             }
           }
           this.$emit('gifing');
