@@ -19,18 +19,17 @@ export default {
   name: 'AddUrl',
   data(){
     return {
-      // moreUrl : false, // url입력창 추가하기
       url1 : null, // url1
       url2 : null, // url2
       fileEndTypes: [ // 지원하는 확장자
         'avi',
-        // 'flv',
-        // 'wmv',
+        'flv',
+        'wmv',
         'mov',
         'mp4',
         'webm',
         'mkv',
-        // 'mpeg',
+        'mpeg',
       ],
     }
   },

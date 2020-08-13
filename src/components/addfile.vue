@@ -24,13 +24,13 @@ export default {
       limitSize : 52428800,
       types : [
         'video/avi',
-        // 'video/x-flv',
-        // 'video/x-ms-wmv',
+        'video/x-flv',
+        'video/x-ms-wmv',
         'video/quicktime',
         'video/mp4',
         'video/webm',
         'video/x-matroska',
-        // 'video/mpeg'
+        'video/mpeg'
       ],
       dragTarget : {
         borderStyle : 'solid',
