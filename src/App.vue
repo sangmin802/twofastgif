@@ -153,6 +153,17 @@ import ScrollPage from './components/scrollPage.vue';
 
 export default {
   name: 'App',
+  metaInfo(){
+    return {
+      title : this.$t('meta.title'),
+      meta : [
+        {name : 'title', content : this.$t('meta.title')},
+        {name : 'description', content : this.$t('meta.description')},
+        {property : 'og:title', content : this.$t('meta.title')},
+        {property : 'og:description', content : this.$t('meta.description')}
+      ]
+    }
+  },
   components: {
     AddFileComponent, // 파일등록
     AddUrlComponent, // url등록
