@@ -156,9 +156,9 @@ export default {
   metaInfo(){
     return {
       title : this.$t('meta.title'),
-      htmlAttrs: {
-        lang: this.$i18n.locale
-      },
+      // htmlAttrs: {
+      //   lang: this.$i18n.locale
+      // },
       meta : [
         {name : 'title', content : this.$t('meta.title')},
         {name : 'description', content : this.$t('meta.description')},
