@@ -78,12 +78,6 @@
 <script>
 export default {
   name: 'scrollPage',
-  data(){
-    return {
-    }
-  },
-  methods : {
-  }
 }
 </script>
 
