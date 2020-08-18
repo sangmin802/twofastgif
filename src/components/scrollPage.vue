@@ -8,7 +8,7 @@
         <div class="stepTitle">① {{$t('scrollpage.step11')}}</div>
         <div class="stepCont">
           <div class="stepImg">
-            <img src="https://fileconvertstorage.s3.ap-northeast-2.amazonaws.com/static/images/savefile.png" alt="파일저장">
+            <img src="https://fileconvertstorage.s3.ap-northeast-2.amazonaws.com/static/images/savefile_jxr.jxr" alt="파일저장">
           </div>
           <ul class="stepText">
             <li>{{$t('scrollpage.step11Text')}}</li>
@@ -19,8 +19,8 @@
         <div class="stepTitle">① {{$t('scrollpage.step12')}}</div>
         <div class="stepCont">
           <div class="stepImg">
-            <img src="https://fileconvertstorage.s3.ap-northeast-2.amazonaws.com/static/images/url.png" alt="url등록">
-            <img src="https://fileconvertstorage.s3.ap-northeast-2.amazonaws.com/static/images/saveurl.png" alt="url저장">
+            <img src="https://fileconvertstorage.s3.ap-northeast-2.amazonaws.com/static/images/url_jxr.jxr" alt="url등록">
+            <img src="https://fileconvertstorage.s3.ap-northeast-2.amazonaws.com/static/images/saveurl_jxr.jxr" alt="url저장">
           </div>
           <ul class="stepText">
             <li>{{$t('scrollpage.step12Text1')}}</li>
@@ -34,9 +34,9 @@
       <div class="stepTitle">② {{$t('scrollpage.step2')}}</div>
       <div class="stepCont">
         <div class="stepImg">
-          <img src="https://fileconvertstorage.s3.ap-northeast-2.amazonaws.com/static/images/overlength.png" alt="개수초과">
-          <img src="https://fileconvertstorage.s3.ap-northeast-2.amazonaws.com/static/images/oversize.png" alt="크기큼">
-          <img src="https://fileconvertstorage.s3.ap-northeast-2.amazonaws.com/static/images/canturl.png" alt="불가능url">
+          <img src="https://fileconvertstorage.s3.ap-northeast-2.amazonaws.com/static/images/overlength_jxr.jxr" alt="개수초과">
+          <img src="https://fileconvertstorage.s3.ap-northeast-2.amazonaws.com/static/images/oversize_jxr.jxr" alt="크기큼">
+          <img src="https://fileconvertstorage.s3.ap-northeast-2.amazonaws.com/static/images/canturl_jxr.jxr" alt="불가능url">
         </div>
         <ul class="stepText">
           <li>{{$t('scrollpage.step2Text1')}}</li>
@@ -49,7 +49,7 @@
       <div class="stepTitle">③ {{$t('scrollpage.step3')}}</div>
       <div class="stepCont">
         <div class="stepImg">
-          <img src="https://fileconvertstorage.s3.ap-northeast-2.amazonaws.com/static/images/setoptions.png" alt="옵션설정">
+          <img src="https://fileconvertstorage.s3.ap-northeast-2.amazonaws.com/static/images/setoptions_jxr.jxr" alt="옵션설정">
         </div>
         <ul class="stepText">
           <li>{{$t('scrollpage.step3Text1')}}</li>
@@ -64,7 +64,7 @@
       <div class="stepTitle">④ {{$t('scrollpage.step4')}}</div>
       <div class="stepCont">
         <div class="stepImg">
-          <img src="https://fileconvertstorage.s3.ap-northeast-2.amazonaws.com/static/images/fin.png" alt="완료">
+          <img src="https://fileconvertstorage.s3.ap-northeast-2.amazonaws.com/static/images/fin_jxr.jxr" alt="완료">
         </div>
         <ul class="stepText">
           <li>{{$t('scrollpage.step4Text1')}}</li>
