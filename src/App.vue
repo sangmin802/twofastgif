@@ -2,10 +2,10 @@
 <template>
   <div id="app"
     :class="{overflowHidden : isPop || !isShownMain}"
-    v-touch:start="touchStart"
-    v-touch:end="touchEventReset"
-    v-touch:moving="touchMove"
-    @mouseleave="touchEventReset"
+    v-touch:start.passive="touchStart"
+    v-touch:end.passive="touchEventReset"
+    v-touch:moving.passive="touchMove"
+    @mouseleave.passive="touchEventReset"
   >
     <!-- 옵션 켰을 때, 검은 뒷배경 -->
     <div class="optionsBg"
@@ -354,7 +354,7 @@ export default {
         evt.forEach(res => {
           el.addEventListener(res, (e) => {
             e.stopPropagation();
-          })
+          },{passive : true})
         })
       }
     }
@@ -364,7 +364,14 @@ export default {
 
 <style>
   /* 눈누 상업적이용가능 무료폰트 감사합니다. */
-  @font-face { font-family: 'paybooc-Bold'; src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/paybooc-Bold.woff') format('woff'); font-weight: normal; font-style: normal; }
+  @font-face { 
+    font-family: 'paybooc-Bold'; 
+    font-display : swap; 
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/paybooc-Bold.woff') 
+    format('woff'); 
+    font-weight: normal; 
+    font-style: normal;
+  }
   html { font-size : 16px;}
   @media all and (min-width:768px) and (max-width:1024px) {
     html { font-size : 14px;}
