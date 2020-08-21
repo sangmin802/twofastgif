@@ -472,7 +472,7 @@ export default {
     z-index : 1;
     width : 2em;
     height : 2em;
-    background : url('https://d3dl1wfbj6c90q.cloudfront.net/static/images/webp_arrow.webp');
+    background : url('https://d2bercmtbm1oey.cloudfront.net/static/images/webp_arrow.webp');
     background-size : cover;
     right : 100%;
     top : 4em;

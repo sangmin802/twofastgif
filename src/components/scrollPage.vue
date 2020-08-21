@@ -8,7 +8,7 @@
         <div class="stepTitle">① {{$t('scrollpage.step11')}}</div>
         <div class="stepCont">
           <div class="stepImg">
-            <img class="lazyload" data-src="https://d3dl1wfbj6c90q.cloudfront.net/static/images/webp_savefile.webp" alt="파일저장">
+            <img class="lazyload" data-src="https://d2bercmtbm1oey.cloudfront.net/static/images/webp_savefile.webp" alt="파일저장">
           </div>
           <ul class="stepText">
             <li>{{$t('scrollpage.step11Text')}}</li>
@@ -19,8 +19,8 @@
         <div class="stepTitle">① {{$t('scrollpage.step12')}}</div>
         <div class="stepCont">
           <div class="stepImg">
-            <img class="lazyload" data-src="https://d3dl1wfbj6c90q.cloudfront.net/static/images/webp_url.webp" alt="url등록">
-            <img class="lazyload" data-src="https://d3dl1wfbj6c90q.cloudfront.net/static/images/webp_saveurl.webp" alt="url저장">
+            <img class="lazyload" data-src="https://d2bercmtbm1oey.cloudfront.net/static/images/webp_url.webp" alt="url등록">
+            <img class="lazyload" data-src="https://d2bercmtbm1oey.cloudfront.net/static/images/webp_saveurl.webp" alt="url저장">
           </div>
           <ul class="stepText">
             <li>{{$t('scrollpage.step12Text1')}}</li>
@@ -34,9 +34,9 @@
       <div class="stepTitle">② {{$t('scrollpage.step2')}}</div>
       <div class="stepCont">
         <div class="stepImg">
-          <img class="lazyload" data-src="https://d3dl1wfbj6c90q.cloudfront.net/static/images/webp_overlength.webp" alt="개수초과">
-          <img class="lazyload" data-src="https://d3dl1wfbj6c90q.cloudfront.net/static/images/webp_oversize.webp" alt="크기큼">
-          <img class="lazyload" data-src="https://d3dl1wfbj6c90q.cloudfront.net/static/images/webp_canturl.webp" alt="불가능url">
+          <img class="lazyload" data-src="https://d2bercmtbm1oey.cloudfront.net/static/images/webp_overlength.webp" alt="개수초과">
+          <img class="lazyload" data-src="https://d2bercmtbm1oey.cloudfront.net/static/images/webp_oversize.webp" alt="크기큼">
+          <img class="lazyload" data-src="https://d2bercmtbm1oey.cloudfront.net/static/images/webp_canturl.webp" alt="불가능url">
         </div>
         <ul class="stepText">
           <li>{{$t('scrollpage.step2Text1')}}</li>
@@ -49,7 +49,7 @@
       <div class="stepTitle">③ {{$t('scrollpage.step3')}}</div>
       <div class="stepCont">
         <div class="stepImg">
-          <img class="lazyload" data-src="https://d3dl1wfbj6c90q.cloudfront.net/static/images/webp_setoptions.webp" alt="옵션설정">
+          <img class="lazyload" data-src="https://d2bercmtbm1oey.cloudfront.net/static/images/webp_setoptions.webp" alt="옵션설정">
         </div>
         <ul class="stepText">
           <li>{{$t('scrollpage.step3Text1')}}</li>
@@ -64,7 +64,7 @@
       <div class="stepTitle">④ {{$t('scrollpage.step4')}}</div>
       <div class="stepCont">
         <div class="stepImg">
-          <img class="lazyload" data-src="https://d3dl1wfbj6c90q.cloudfront.net/static/images/webp_fin.webp" alt="완료">
+          <img class="lazyload" data-src="https://d2bercmtbm1oey.cloudfront.net/static/images/webp_fin.webp" alt="완료">
         </div>
         <ul class="stepText">
           <li>{{$t('scrollpage.step4Text1')}}</li>
