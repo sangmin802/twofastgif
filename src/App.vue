@@ -72,7 +72,9 @@
       :class="{transition : isNowMoving}"
     >
       <div class="left">
-        <ScrollPage>
+        <ScrollPage
+          :ismain="isShownMain"
+        >
         </ScrollPage>
       </div>
       <div class="right">

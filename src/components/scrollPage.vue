@@ -8,7 +8,7 @@
         <div class="stepTitle">① {{$t('scrollpage.step11')}}</div>
         <div class="stepCont">
           <div class="stepImg">
-            <img class="lazyload" data-src="https://d2bercmtbm1oey.cloudfront.net/static/images/webp_savefile.webp" alt="파일저장">
+            <img class="lazyload" :src="this.src[0]" alt="파일저장">
           </div>
           <ul class="stepText">
             <li>{{$t('scrollpage.step11Text')}}</li>
@@ -19,8 +19,8 @@
         <div class="stepTitle">① {{$t('scrollpage.step12')}}</div>
         <div class="stepCont">
           <div class="stepImg">
-            <img class="lazyload" data-src="https://d2bercmtbm1oey.cloudfront.net/static/images/webp_url.webp" alt="url등록">
-            <img class="lazyload" data-src="https://d2bercmtbm1oey.cloudfront.net/static/images/webp_saveurl.webp" alt="url저장">
+            <img class="lazyload" :src="this.src[1]" alt="url등록">
+            <img class="lazyload" :src="this.src[2]" alt="url저장">
           </div>
           <ul class="stepText">
             <li>{{$t('scrollpage.step12Text1')}}</li>
@@ -34,9 +34,9 @@
       <div class="stepTitle">② {{$t('scrollpage.step2')}}</div>
       <div class="stepCont">
         <div class="stepImg">
-          <img class="lazyload" data-src="https://d2bercmtbm1oey.cloudfront.net/static/images/webp_overlength.webp" alt="개수초과">
-          <img class="lazyload" data-src="https://d2bercmtbm1oey.cloudfront.net/static/images/webp_oversize.webp" alt="크기큼">
-          <img class="lazyload" data-src="https://d2bercmtbm1oey.cloudfront.net/static/images/webp_canturl.webp" alt="불가능url">
+          <img class="lazyload" :src="this.src[3]" alt="개수초과">
+          <img class="lazyload" :src="this.src[4]" alt="크기큼">
+          <img class="lazyload" :src="this.src[5]" alt="불가능url">
         </div>
         <ul class="stepText">
           <li>{{$t('scrollpage.step2Text1')}}</li>
@@ -49,7 +49,7 @@
       <div class="stepTitle">③ {{$t('scrollpage.step3')}}</div>
       <div class="stepCont">
         <div class="stepImg">
-          <img class="lazyload" data-src="https://d2bercmtbm1oey.cloudfront.net/static/images/webp_setoptions.webp" alt="옵션설정">
+          <img class="lazyload" :src="this.src[6]" alt="옵션설정">
         </div>
         <ul class="stepText">
           <li>{{$t('scrollpage.step3Text1')}}</li>
@@ -64,7 +64,7 @@
       <div class="stepTitle">④ {{$t('scrollpage.step4')}}</div>
       <div class="stepCont">
         <div class="stepImg">
-          <img class="lazyload" data-src="https://d2bercmtbm1oey.cloudfront.net/static/images/webp_fin.webp" alt="완료">
+          <img class="lazyload" :src="this.src[7]" alt="완료">
         </div>
         <ul class="stepText">
           <li>{{$t('scrollpage.step4Text1')}}</li>
@@ -77,7 +77,25 @@
 
 <script>
 export default {
+  props : ['ismain'],
   name: 'scrollPage',
+  data(){
+    return {
+      src : []
+    }
+  },
+  watch : {
+    ismain(newVal, oldVal){ // 받는 속성값을 확인하고, img lazy loading
+      if(!newVal && this.src.length===0){
+        const imgName = ['savefile', 'url', 'saveurl', 'overlength', 'oversize', 'canturl', 'setoptions', 'fin'];
+        const base = 'https://d2bercmtbm1oey.cloudfront.net/static/images/webp_'
+        const src = imgName.map(res => {
+          return base+res+'.webp';
+        });
+        this.src = src;
+      }
+    }
+  }
 }
 </script>
 
